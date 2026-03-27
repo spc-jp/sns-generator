@@ -10,10 +10,8 @@
     --blue-dark: #225AD3;
     --blue-light: #0179E8;
     --blue-pale: #EBF3FF;
-    --x-color: #000000;
-    --threads-color: #101010;
-    --insta-color: #E1306C;
     --note-color: #41C9B4;
+    --insta-color: #E1306C;
     --bg: #F4F7FF;
     --card: #FFFFFF;
     --text: #1A1A2E;
@@ -21,321 +19,29 @@
     --radius: 16px;
     --shadow: 0 4px 24px rgba(34,90,211,0.10);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Noto Sans JP', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0 0 60px 0;
-  }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 0 60px; }
 
   header {
     background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-light) 100%);
-    padding: 28px 24px 24px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+    padding: 28px 24px 24px; text-align: center; position: relative; overflow: hidden;
   }
+  header::before { content: ''; position: absolute; width: 300px; height: 300px; background: rgba(255,255,255,0.06); border-radius: 50%; top: -100px; right: -60px; }
+  header h1 { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 0.05em; position: relative; }
+  header p { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 6px; position: relative; }
+  .badge { display: inline-block; background: rgba(255,255,255,0.18); color: #fff; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; position: relative; }
 
-  header::before {
-    content: '';
-    position: absolute;
-    width: 300px; height: 300px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 50%;
-    top: -100px; right: -60px;
-  }
+  .container { max-width: 680px; margin: 0 auto; padding: 0 16px; }
 
-  header h1 {
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: 22px;
-    font-weight: 900;
-    color: #fff;
-    letter-spacing: 0.05em;
-    position: relative;
-  }
+  .input-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-top: 20px; border: 1px solid rgba(34,90,211,0.08); }
+  .input-card h2 { font-size: 14px; font-weight: 700; color: var(--blue-dark); margin-bottom: 16px; }
+  .field { margin-bottom: 14px; }
+  label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.04em; }
+  input[type="text"], textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #E0E8F8; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 14px; color: var(--text); background: var(--blue-pale); outline: none; transition: border-color 0.2s; resize: none; }
+  input[type="text"]:focus, textarea:focus { border-color: var(--blue-light); background: #fff; }
 
-  header p {
-    font-size: 12px;
-    color: rgba(255,255,255,0.75);
-    margin-top: 6px;
-    position: relative;
-  }
-
-  .badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.18);
-    color: #fff;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    margin-bottom: 10px;
-    position: relative;
-  }
-
-  .container {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 0 16px;
-  }
-
-  .input-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 24px;
-    margin-top: 20px;
-    border: 1px solid rgba(34,90,211,0.08);
-  }
-
-  .input-card h2 {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--blue-dark);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .field {
-    margin-bottom: 14px;
-  }
-
-  label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--muted);
-    margin-bottom: 6px;
-    letter-spacing: 0.04em;
-  }
-
-  input[type="text"], textarea {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid #E0E8F8;
-    border-radius: 10px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 14px;
-    color: var(--text);
-    background: var(--blue-pale);
-    outline: none;
-    transition: border-color 0.2s;
-    resize: none;
-  }
-
-  input[type="text"]:focus, textarea:focus {
-    border-color: var(--blue-light);
-    background: #fff;
-  }
-
-  .generate-btn {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, var(--blue-dark), var(--blue-light));
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: 16px;
-    font-weight: 900;
-    letter-spacing: 0.06em;
-    cursor: pointer;
-    margin-top: 8px;
-    transition: opacity 0.2s, transform 0.1s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .generate-btn:active { transform: scale(0.98); }
-  .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .generate-btn .shimmer {
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    animation: shimmer 1.5s infinite;
-  }
-
-  @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-  }
-
-  .loading-area {
-    text-align: center;
-    padding: 32px;
-    color: var(--muted);
-    font-size: 14px;
-    display: none;
-  }
-
-  .spinner {
-    width: 36px; height: 36px;
-    border: 3px solid #E0E8F8;
-    border-top-color: var(--blue-light);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 12px;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .results-area { margin-top: 20px; display: none; }
-
-  .result-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    margin-bottom: 16px;
-    overflow: hidden;
-    border: 1px solid rgba(34,90,211,0.06);
-    animation: fadeUp 0.4s ease forwards;
-    opacity: 0;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .result-card:nth-child(1) { animation-delay: 0.05s; }
-  .result-card:nth-child(2) { animation-delay: 0.15s; }
-  .result-card:nth-child(3) { animation-delay: 0.25s; }
-  .result-card:nth-child(4) { animation-delay: 0.35s; }
-
-  .card-header {
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid #F0F4FF;
-  }
-
-  .card-header.x-header { background: #0a0a0a; color: #fff; }
-  .card-header.threads-header { background: #1a1a1a; color: #fff; }
-  .card-header.insta-header { background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045); color: #fff; }
-  .card-header.note-header { background: linear-gradient(90deg, #2ba891, #41c9b4); color: #fff; }
-
-  .card-header .plat-name {
-    font-weight: 900;
-    font-size: 14px;
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-  }
-
-  .card-header .plat-icon { font-size: 20px; }
-
-  .char-limit {
-    margin-left: auto;
-    font-size: 11px;
-    opacity: 0.75;
-    background: rgba(255,255,255,0.15);
-    padding: 2px 8px;
-    border-radius: 20px;
-  }
-
-  .card-body {
-    padding: 18px;
-  }
-
-  .post-text {
-    font-size: 14px;
-    line-height: 1.8;
-    color: var(--text);
-    white-space: pre-wrap;
-    word-break: break-word;
-    min-height: 80px;
-  }
-
-  .char-count {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 8px;
-    text-align: right;
-  }
-
-  .char-count.over { color: #E74C3C; font-weight: 700; }
-
-  .card-actions {
-    padding: 12px 18px 16px;
-    display: flex;
-    gap: 8px;
-    border-top: 1px solid #F0F4FF;
-  }
-
-  .copy-btn {
-    flex: 1;
-    padding: 10px;
-    border: 1.5px solid #E0E8F8;
-    border-radius: 8px;
-    background: var(--blue-pale);
-    color: var(--blue-dark);
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .copy-btn:hover { background: var(--blue-dark); color: #fff; border-color: var(--blue-dark); }
-  .copy-btn.copied { background: #27AE60; color: #fff; border-color: #27AE60; }
-
-  .regen-btn {
-    padding: 10px 14px;
-    border: 1.5px solid #E0E8F8;
-    border-radius: 8px;
-    background: #fff;
-    color: var(--muted);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .regen-btn:hover { border-color: var(--blue-light); color: var(--blue-dark); }
-
-  .tips-bar {
-    background: linear-gradient(90deg, rgba(34,90,211,0.08), rgba(1,121,232,0.06));
-    border-radius: 10px;
-    padding: 12px 16px;
-    margin: 0 18px 12px;
-    font-size: 12px;
-    color: var(--blue-dark);
-    line-height: 1.6;
-    border-left: 3px solid var(--blue-light);
-  }
-
-  .error-msg {
-    background: #FFF0F0;
-    border: 1px solid #FFD0D0;
-    border-radius: 10px;
-    padding: 14px 16px;
-    color: #C0392B;
-    font-size: 13px;
-    margin-top: 12px;
-    display: none;
-  }
-
-  .platform-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 4px;
-  }
-
-  .ptag {
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 700;
-    cursor: pointer;
-    border: 1.5px solid transparent;
-    transition: all 0.15s;
-  }
-
+  .platform-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .ptag { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; }
   .ptag-x { background: #f0f0f0; color: #222; }
   .ptag-x.on { background: #111; color: #fff; border-color: #111; }
   .ptag-threads { background: #f5f5f5; color: #555; }
@@ -345,12 +51,69 @@
   .ptag-note { background: #f0fdfb; color: #1a9a8a; }
   .ptag-note.on { background: var(--note-color); color: #fff; border-color: var(--note-color); }
 
-  footer {
-    text-align: center;
-    padding: 24px 0 0;
-    font-size: 11px;
-    color: var(--muted);
-  }
+  .generate-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--blue-dark), var(--blue-light)); color: #fff; border: none; border-radius: 12px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 16px; font-weight: 900; letter-spacing: 0.06em; cursor: pointer; margin-top: 8px; transition: opacity 0.2s, transform 0.1s; position: relative; overflow: hidden; }
+  .generate-btn:active { transform: scale(0.98); }
+  .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .generate-btn .shimmer { position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 1.5s infinite; }
+  @keyframes shimmer { 0% { left: -100%; } 100% { left: 100%; } }
+
+  .loading-area { text-align: center; padding: 32px; color: var(--muted); font-size: 14px; display: none; }
+  .spinner { width: 36px; height: 36px; border: 3px solid #E0E8F8; border-top-color: var(--blue-light); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .results-area { margin-top: 20px; display: none; }
+
+  .copy-all-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #1a9a8a, var(--note-color)); color: #fff; border: none; border-radius: 12px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; font-weight: 900; cursor: pointer; margin-bottom: 16px; transition: opacity 0.2s, transform 0.1s; }
+  .copy-all-btn:active { transform: scale(0.98); }
+  .copy-all-btn.copied { background: #27AE60; }
+
+  .result-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; border: 1px solid rgba(34,90,211,0.06); animation: fadeUp 0.4s ease forwards; opacity: 0; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .result-card:nth-child(2) { animation-delay: 0.05s; }
+  .result-card:nth-child(3) { animation-delay: 0.15s; }
+  .result-card:nth-child(4) { animation-delay: 0.25s; }
+  .result-card:nth-child(5) { animation-delay: 0.35s; }
+
+  .card-header { padding: 14px 18px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #F0F4FF; }
+  .card-header.x-header { background: #0a0a0a; color: #fff; }
+  .card-header.threads-header { background: #1a1a1a; color: #fff; }
+  .card-header.insta-header { background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045); color: #fff; }
+  .card-header.note-header { background: linear-gradient(90deg, #2ba891, #41c9b4); color: #fff; }
+  .card-header .plat-name { font-weight: 900; font-size: 14px; font-family: 'Zen Kaku Gothic New', sans-serif; }
+  .card-header .plat-icon { font-size: 20px; }
+  .char-limit { margin-left: auto; font-size: 11px; opacity: 0.75; background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 20px; }
+
+  .card-body { padding: 18px; }
+  .post-text { font-size: 14px; line-height: 1.8; color: var(--text); white-space: pre-wrap; word-break: break-word; min-height: 80px; }
+  .char-count { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: right; }
+  .char-count.over { color: #E74C3C; font-weight: 700; }
+
+  /* note専用 */
+  .note-section { margin-bottom: 16px; }
+  .note-label { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+  .note-title-box { background: linear-gradient(90deg, #f0fdfb, #e6faf7); border: 1.5px solid var(--note-color); border-radius: 10px; padding: 14px 16px; }
+  .note-title-text { font-size: 16px; font-weight: 900; color: var(--text); line-height: 1.5; font-family: 'Zen Kaku Gothic New', sans-serif; }
+  .note-body-text { font-size: 13px; line-height: 1.9; color: var(--text); white-space: pre-wrap; word-break: break-word; }
+  .note-url-box { background: var(--blue-pale); border: 1.5px solid #C0D8F8; border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 8px; }
+  .note-url-label { font-size: 11px; font-weight: 700; color: var(--blue-dark); white-space: nowrap; }
+  .note-url-text { font-size: 13px; color: var(--blue-light); word-break: break-all; }
+  .note-memo-text { font-size: 13px; color: var(--text); line-height: 1.7; background: #FFFDF0; border: 1px solid #F0E68C; border-radius: 8px; padding: 10px 14px; }
+  .note-tags-box { display: flex; flex-wrap: wrap; gap: 6px; }
+  .note-tag { background: linear-gradient(90deg, #f0fdfb, #e0f9f5); border: 1px solid var(--note-color); color: #1a9a8a; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+
+  .tips-bar { background: linear-gradient(90deg, rgba(34,90,211,0.08), rgba(1,121,232,0.06)); border-radius: 10px; padding: 12px 16px; margin: 0 18px 12px; font-size: 12px; color: var(--blue-dark); line-height: 1.6; border-left: 3px solid var(--blue-light); }
+
+  .card-actions { padding: 12px 18px 16px; display: flex; gap: 8px; border-top: 1px solid #F0F4FF; flex-wrap: wrap; }
+  .copy-btn { flex: 1; padding: 10px; border: 1.5px solid #E0E8F8; border-radius: 8px; background: var(--blue-pale); color: var(--blue-dark); font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .copy-btn:hover { background: var(--blue-dark); color: #fff; border-color: var(--blue-dark); }
+  .copy-btn.copied { background: #27AE60; color: #fff; border-color: #27AE60; }
+  .copy-btn-note-title { flex: 1; padding: 10px; border: 1.5px solid var(--note-color); border-radius: 8px; background: #f0fdfb; color: #1a9a8a; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .copy-btn-note-title.copied { background: #27AE60; color: #fff; border-color: #27AE60; }
+  .regen-btn { padding: 10px 14px; border: 1.5px solid #E0E8F8; border-radius: 8px; background: #fff; color: var(--muted); font-size: 13px; cursor: pointer; transition: all 0.2s; }
+  .regen-btn:hover { border-color: var(--blue-light); color: var(--blue-dark); }
+
+  .error-msg { background: #FFF0F0; border: 1px solid #FFD0D0; border-radius: 10px; padding: 14px 16px; color: #C0392B; font-size: 13px; margin-top: 12px; display: none; }
+  footer { text-align: center; padding: 24px 0 0; font-size: 11px; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -364,27 +127,22 @@
 <div class="container">
   <div class="input-card">
     <h2>📝 アプリ情報を入力</h2>
-
     <div class="field">
       <label>アプリ名 *</label>
       <input type="text" id="appName" placeholder="例：採用みっけ　/　ひとり社長の経営会議室" />
     </div>
-
     <div class="field">
       <label>URL *</label>
       <input type="text" id="appUrl" placeholder="https://spc-jp.github.io/..." />
     </div>
-
     <div class="field">
       <label>アプリの説明・ひと言メモ（任意）</label>
       <textarea id="appDesc" rows="3" placeholder="例：中小企業の採用担当者向けに、求人票のポイントをAIがアドバイス。無料でお試しできます。"></textarea>
     </div>
-
     <div class="field">
       <label>対象読者・ターゲット（任意）</label>
       <input type="text" id="appTarget" placeholder="例：税理士事務所の先生、ひとり社長、飲食店オーナー" />
     </div>
-
     <div class="field">
       <label>生成する媒体を選択</label>
       <div class="platform-tags">
@@ -394,12 +152,10 @@
         <span class="ptag ptag-note on" data-plat="note" onclick="togglePlat(this)">📝 note</span>
       </div>
     </div>
-
     <button class="generate-btn" id="genBtn" onclick="generate()">
       <span class="shimmer"></span>
       🚀 SNS投稿を生成する
     </button>
-
     <div class="error-msg" id="errorMsg"></div>
   </div>
 
@@ -409,90 +165,49 @@
   </div>
 
   <div class="results-area" id="resultsArea"></div>
-
   <footer>Powered by Claude API ｜ Smile Plus Consulting</footer>
 </div>
 
 <script>
 const WORKER_URL = 'https://sns-generator-api.yymmatsu.workers.dev';
-
 const PLATFORMS = {
-  x: {
-    name: 'X（Twitter）',
-    icon: '𝕏',
-    limit: 140,
-    headerClass: 'x-header',
-    tip: '投稿直後30分の反応がカギ。リプライにも必ず返信を！'
-  },
-  threads: {
-    name: 'Threads',
-    icon: '🧵',
-    limit: 500,
-    headerClass: 'threads-header',
-    tip: 'フォロワー外にも届きやすい。返信・引用を積極的に。'
-  },
-  insta: {
-    name: 'Instagram',
-    icon: '📷',
-    limit: 2200,
-    headerClass: 'insta-header',
-    tip: 'キャプションより「保存したくなる」内容が拡散の鍵。'
-  },
-  note: {
-    name: 'note',
-    icon: '📝',
-    limit: null,
-    headerClass: 'note-header',
-    tip: '読了率を上げるため、冒頭3行で読者の心をつかもう。'
-  }
+  x:       { name: 'X（Twitter）', icon: '𝕏',  limit: 140,  headerClass: 'x-header',      tip: '投稿直後30分の反応がカギ。リプライにも必ず返信を！' },
+  threads: { name: 'Threads',      icon: '🧵', limit: 500,  headerClass: 'threads-header', tip: 'フォロワー外にも届きやすい。返信・引用を積極的に。' },
+  insta:   { name: 'Instagram',    icon: '📷', limit: 2200, headerClass: 'insta-header',   tip: '「保存したくなる」内容が拡散の鍵。ハッシュタグは末尾に。' },
+  note:    { name: 'note',         icon: '📝', limit: null, headerClass: 'note-header',    tip: '目次対応の見出し構成で、読者が最後まで読みやすくなります。' }
 };
 
-const activePlats = new Set(['x', 'threads', 'insta', 'note']);
+const activePlats = new Set(['x','threads','insta','note']);
+let generatedPosts = {};
+let currentAppUrl = '';
 
 function togglePlat(el) {
   const plat = el.dataset.plat;
   if (activePlats.has(plat)) {
     if (activePlats.size <= 1) return;
-    activePlats.delete(plat);
-    el.classList.remove('on');
+    activePlats.delete(plat); el.classList.remove('on');
   } else {
-    activePlats.add(plat);
-    el.classList.add('on');
+    activePlats.add(plat); el.classList.add('on');
   }
 }
 
-const loadingMessages = [
-  'アプリの魅力を分析中...',
-  '各SNSのアルゴリズムを考慮中...',
-  'ターゲットに刺さる言葉を選んでいます...',
-  'もう少しで完成です！'
-];
+const loadingMessages = ['アプリの魅力を分析中...','各SNSのアルゴリズムを考慮中...','ターゲットに刺さる言葉を選んでいます...','note記事を執筆中です...','もう少しで完成です！'];
 
 async function generate() {
-  const appName = document.getElementById('appName').value.trim();
-  const appUrl = document.getElementById('appUrl').value.trim();
-  const appDesc = document.getElementById('appDesc').value.trim();
+  const appName   = document.getElementById('appName').value.trim();
+  const appUrl    = document.getElementById('appUrl').value.trim();
+  const appDesc   = document.getElementById('appDesc').value.trim();
   const appTarget = document.getElementById('appTarget').value.trim();
-  const errorMsg = document.getElementById('errorMsg');
-
+  const errorMsg  = document.getElementById('errorMsg');
   errorMsg.style.display = 'none';
+  if (!appName || !appUrl) { errorMsg.textContent = '⚠️ アプリ名とURLは必須です。'; errorMsg.style.display = 'block'; return; }
 
-  if (!appName || !appUrl) {
-    errorMsg.textContent = '⚠️ アプリ名とURLは必須です。入力してください。';
-    errorMsg.style.display = 'block';
-    return;
-  }
-
-  if (activePlats.size === 0) {
-    errorMsg.textContent = '⚠️ 生成する媒体を1つ以上選択してください。';
-    errorMsg.style.display = 'block';
-    return;
-  }
+  currentAppUrl = appUrl;
+  generatedPosts = {};
 
   const btn = document.getElementById('genBtn');
   const loadingArea = document.getElementById('loadingArea');
   const resultsArea = document.getElementById('resultsArea');
-
   btn.disabled = true;
   loadingArea.style.display = 'block';
   resultsArea.style.display = 'none';
@@ -500,187 +215,254 @@ async function generate() {
 
   let msgIdx = 0;
   const loadingText = document.getElementById('loadingText');
-  const loadingInterval = setInterval(() => {
-    msgIdx = (msgIdx + 1) % loadingMessages.length;
-    loadingText.textContent = loadingMessages[msgIdx];
-  }, 1800);
+  const loadingInterval = setInterval(() => { msgIdx = (msgIdx+1) % loadingMessages.length; loadingText.textContent = loadingMessages[msgIdx]; }, 1800);
 
-  const platList = [...activePlats];
-  const platDescriptions = {
-    x: 'X（旧Twitter）：140文字以内。改行・絵文字を活用し、インパクトのある一言から始め、URLで締める。ハッシュタグは1〜2個。',
-    threads: 'Threads：500文字以内。少し長めの語りかけ口調で、共感を生む内容に。絵文字を自然に使う。',
-    insta: 'Instagram：キャプション（500文字以内推奨）。改行を多く使い読みやすく。保存したくなる有益情報を入れる。ハッシュタグは末尾に5〜10個。',
-    note: 'note：リード文（冒頭200文字程度）として機能するテキスト。読み手が続きを読みたくなる書き出し。URLへの誘導で締める。'
-  };
-
-  const platInstructions = platList.map(p => `【${PLATFORMS[p].name}】\n${platDescriptions[p]}`).join('\n\n');
-
-  const prompt = `あなたはSNSマーケティングの専門家です。
-以下のWebアプリの情報をもとに、各SNS媒体向けの投稿文を生成してください。
-
-アプリ名：${appName}
-URL：${appUrl}
-${appDesc ? `説明：${appDesc}` : ''}
-${appTarget ? `ターゲット：${appTarget}` : ''}
-
-投稿者プロフィール：68歳のフリーランスWebマーケター。「中小企業の宝探し」をモットーに、AIを活用した中小企業支援を20年以上行っている。温かみのある語り口で、専門用語を使わないわかりやすい発信が特徴。
-
-以下の各SNS向けに投稿文を生成してください：
-
-${platInstructions}
-
-出力形式：
-以下のJSON形式のみで返してください。説明文や前後の文章は一切不要です。
-{
-${platList.map(p => `  "${p}": "投稿テキスト"`).join(',\n')}
-}
-
-注意事項：
-- 自然でSNSらしい日本語で書く
-- 絵文字を適度に使う（多すぎず少なすぎず）
-- 宣伝くさくなく、価値提供を前面に出す
-- 文字数制限を必ず守る（Xは特に140文字以内厳守）
-- URLは必ず含める`;
+  const profile = `投稿者：68歳のフリーランスWebマーケター。「中小企業の宝探し」をモットーに、AIを活用した中小企業支援を20年以上行っている。温かみのある語り口で、専門用語を使わないわかりやすい発信が特徴。`;
 
   try {
-    const response = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
+    const nonNotePlats = [...activePlats].filter(p => p !== 'note');
+    let snsPosts = {};
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(err.error?.message || `APIエラー: ${response.status}`);
+    if (nonNotePlats.length > 0) {
+      const platDescriptions = {
+        x:       'X（旧Twitter）：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。',
+        threads: 'Threads：500文字以内。語りかけ口調で共感を生む内容。絵文字を自然に使う。',
+        insta:   'Instagram：500文字以内。改行を多く使い読みやすく。保存したくなる情報を入れる。ハッシュタグは末尾に7〜10個。'
+      };
+      const snsPrompt = `あなたはSNSマーケティングの専門家です。
+アプリ名：${appName} URL：${appUrl}
+${appDesc?'説明：'+appDesc:''}${appTarget?'\nターゲット：'+appTarget:''}
+${profile}
+以下のJSON形式のみで返してください。説明文・前置き・コードブロック不要。
+{\n${nonNotePlats.map(p=>`  "${p}": "投稿テキスト"`).join(',\n')}\n}
+各媒体の条件：
+${nonNotePlats.map(p=>`【${PLATFORMS[p].name}】${platDescriptions[p]}`).join('\n')}
+注意：自然な日本語・絵文字適度・宣伝くさくしない・文字数厳守・URLを含める`;
+
+      const snsRes = await fetch(WORKER_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ max_tokens:1000, messages:[{role:'user', content:snsPrompt}] }) });
+      const snsData = await snsRes.json();
+      const snsText = (snsData.content||[]).map(c=>c.text||'').join('');
+      const snsMatch = snsText.match(/\{[\s\S]*\}/);
+      if (snsMatch) snsPosts = JSON.parse(snsMatch[0]);
     }
 
-    const data = await response.json();
-    const rawText = data.content.map(c => c.text || '').join('');
+    let noteData = null;
+    if (activePlats.has('note')) {
+      const notePrompt = `あなたはnote記事のプロライターです。
+アプリ名：${appName} URL：${appUrl}
+${appDesc?'説明：'+appDesc:''}${appTarget?'\nターゲット：'+appTarget:''}
+${profile}
+以下のJSON形式のみで返してください。説明文・前置き・コードブロック不要。
+{
+  "title": "読者が思わずクリックしたくなる刺さるキャッチコピータイトル（30文字以内）",
+  "body": "##大見出し\\n###小見出し の形式を使った2300文字程度の紹介記事本文。アプリの価値・使い方・こんな人におすすめ・導入効果などを丁寧に解説。URLへの誘導も本文中に1回含める。",
+  "memo": "このアプリをひとことで表す印象的なキャッチフレーズ（50文字以内）",
+  "tags": ["タグ1","タグ2","タグ3","タグ4","タグ5","タグ6","タグ7"]
+}
+注意：tagsは必ず7個・#なしで返す・bodyは必ず見出し構造を使う・2300文字程度`;
 
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('レスポンスの解析に失敗しました。再度お試しください。');
-
-    const posts = JSON.parse(jsonMatch[0]);
+      const noteRes = await fetch(WORKER_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ max_tokens:2000, messages:[{role:'user', content:notePrompt}] }) });
+      const noteJson = await noteRes.json();
+      const noteText = (noteJson.content||[]).map(c=>c.text||'').join('');
+      const noteMatch = noteText.match(/\{[\s\S]*\}/);
+      if (noteMatch) noteData = JSON.parse(noteMatch[0]);
+    }
 
     clearInterval(loadingInterval);
     loadingArea.style.display = 'none';
-
     resultsArea.style.display = 'block';
-    platList.forEach(plat => {
-      if (!posts[plat]) return;
-      const text = posts[plat];
+
+    // 全投稿まとめてコピーボタン
+    const copyAllBtn = document.createElement('button');
+    copyAllBtn.className = 'copy-all-btn';
+    copyAllBtn.textContent = '📋 全投稿をまとめてコピー';
+    copyAllBtn.onclick = copyAll;
+    resultsArea.appendChild(copyAllBtn);
+
+    // X・Threads・Instagramカード
+    nonNotePlats.forEach(plat => {
+      const text = snsPosts[plat] || '';
+      generatedPosts[plat] = text;
       const p = PLATFORMS[plat];
       const charCount = [...text].length;
       const isOver = p.limit && charCount > p.limit;
-
       const card = document.createElement('div');
       card.className = 'result-card';
       card.innerHTML = `
         <div class="card-header ${p.headerClass}">
           <span class="plat-icon">${p.icon}</span>
           <span class="plat-name">${p.name}</span>
-          ${p.limit ? `<span class="char-limit">${p.limit}文字以内</span>` : '<span class="char-limit">文字数制限なし</span>'}
+          <span class="char-limit">${p.limit}文字以内</span>
         </div>
         <div class="card-body">
           <div class="post-text" id="post-${plat}">${escapeHtml(text)}</div>
-          <div class="char-count ${isOver ? 'over' : ''}">${charCount}文字${isOver ? '（⚠️ 超過）' : ''}</div>
+          <div class="char-count ${isOver?'over':''}">${charCount}文字${isOver?'（⚠️ 超過）':''}</div>
         </div>
         <div class="tips-bar">💡 ${p.tip}</div>
         <div class="card-actions">
-          <button class="copy-btn" onclick="copyPost('${plat}', this)">📋 コピー</button>
-          <button class="regen-btn" onclick="regenSingle('${plat}', '${escapeAttr(appName)}', '${escapeAttr(appUrl)}', '${escapeAttr(appDesc)}', '${escapeAttr(appTarget)}')">🔄 再生成</button>
-        </div>
-      `;
+          <button class="copy-btn" onclick="copyPost('${plat}',this)">📋 コピー</button>
+          <button class="regen-btn" onclick="regenSingle('${plat}','${escapeAttr(appName)}','${escapeAttr(appUrl)}','${escapeAttr(appDesc)}','${escapeAttr(appTarget)}')">🔄 再生成</button>
+        </div>`;
       resultsArea.appendChild(card);
     });
 
-  } catch (err) {
+    // noteカード
+    if (noteData) {
+      generatedPosts['note'] = noteData;
+      const tagsHtml = (noteData.tags||[]).map(t=>`<span class="note-tag">#${t}</span>`).join('');
+      const noteCard = document.createElement('div');
+      noteCard.className = 'result-card';
+      noteCard.innerHTML = `
+        <div class="card-header note-header">
+          <span class="plat-icon">📝</span>
+          <span class="plat-name">note 記事</span>
+          <span class="char-limit">2300文字・目次対応</span>
+        </div>
+        <div class="card-body">
+          <div class="note-section">
+            <div class="note-label">📌 タイトル</div>
+            <div class="note-title-box"><div class="note-title-text" id="note-title">${escapeHtml(noteData.title||'')}</div></div>
+          </div>
+          <div class="note-section">
+            <div class="note-label">📄 本文（##大見出し / ###小見出し 構造）</div>
+            <div class="note-body-text" id="note-body">${escapeHtml(noteData.body||'')}</div>
+            <div class="char-count">${[...(noteData.body||'')].length}文字</div>
+          </div>
+          <div class="note-section">
+            <div class="note-url-box">
+              <span class="note-url-label">🔗 URL</span>
+              <span class="note-url-text">${escapeHtml(appUrl)}</span>
+            </div>
+          </div>
+          <div class="note-section">
+            <div class="note-label">💬 ひとことメモ</div>
+            <div class="note-memo-text" id="note-memo">${escapeHtml(noteData.memo||'')}</div>
+          </div>
+          <div class="note-section">
+            <div class="note-label">🏷️ ハッシュタグ</div>
+            <div class="note-tags-box" id="note-tags">${tagsHtml}</div>
+          </div>
+        </div>
+        <div class="tips-bar">💡 ${PLATFORMS.note.tip}</div>
+        <div class="card-actions">
+          <button class="copy-btn" onclick="copyNote(this)">📋 note全文コピー</button>
+          <button class="copy-btn-note-title" onclick="copyNoteTitle(this)">📌 タイトルのみ</button>
+          <button class="regen-btn" onclick="regenNote('${escapeAttr(appName)}','${escapeAttr(appUrl)}','${escapeAttr(appDesc)}','${escapeAttr(appTarget)}')">🔄 再生成</button>
+        </div>`;
+      resultsArea.appendChild(noteCard);
+    }
+
+  } catch(err) {
     clearInterval(loadingInterval);
     loadingArea.style.display = 'none';
-    errorMsg.textContent = '❌ ' + (err.message || 'エラーが発生しました。再度お試しください。');
+    errorMsg.textContent = '❌ ' + (err.message||'エラーが発生しました。再度お試しください。');
     errorMsg.style.display = 'block';
   }
-
   btn.disabled = false;
 }
 
-async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
-  const postEl = document.getElementById('post-' + plat);
-  if (!postEl) return;
-  postEl.textContent = '再生成中...';
-
-  const platDescriptions = {
-    x: 'X（旧Twitter）：140文字以内。改行・絵文字を活用し、インパクトのある一言から始め、URLで締める。ハッシュタグは1〜2個。',
-    threads: 'Threads：500文字以内。少し長めの語りかけ口調で、共感を生む内容に。絵文字を自然に使う。',
-    insta: 'Instagram：キャプション（500文字以内推奨）。改行を多く使い読みやすく。保存したくなる有益情報を入れる。ハッシュタグは末尾に5〜10個。',
-    note: 'note：リード文（冒頭200文字程度）として機能するテキスト。読み手が続きを読みたくなる書き出し。URLへの誘導で締める。'
-  };
-
-  const prompt = `あなたはSNSマーケティングの専門家です。
-アプリ名：${appName}、URL：${appUrl}
-${appDesc ? `説明：${appDesc}` : ''}
-${appTarget ? `ターゲット：${appTarget}` : ''}
-
-投稿者：68歳フリーランスWebマーケター。温かみのある語り口。
-
-【${PLATFORMS[plat].name}】向け投稿文を1つだけ生成してください。
-${platDescriptions[plat]}
-
-前回と異なるアプローチで書いてください。
-投稿文のテキストのみを返してください。説明や前置きは不要です。`;
-
-  try {
-    const response = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        max_tokens: 400,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    const data = await response.json();
-    const text = (data.content || []).map(c => c.text || '').join('').trim();
-    postEl.textContent = text;
-
-    const p = PLATFORMS[plat];
-    const charCount = [...text].length;
-    const countEl = postEl.parentElement.querySelector('.char-count');
-    if (countEl) {
-      const isOver = p.limit && charCount > p.limit;
-      countEl.textContent = `${charCount}文字${isOver ? '（⚠️ 超過）' : ''}`;
-      countEl.className = 'char-count' + (isOver ? ' over' : '');
-    }
-  } catch (e) {
-    postEl.textContent = '再生成に失敗しました。もう一度お試しください。';
+function copyAll() {
+  let allText = '';
+  ['x','threads','insta'].forEach(plat => {
+    if (!generatedPosts[plat]) return;
+    allText += `【${PLATFORMS[plat].name}】\n${generatedPosts[plat]}\n\n`;
+  });
+  if (generatedPosts['note']) {
+    const n = generatedPosts['note'];
+    allText += `【note】\nタイトル：${n.title}\n\n${n.body}\n\nURL：${currentAppUrl}\n\nメモ：${n.memo}\n\nタグ：${(n.tags||[]).map(t=>'#'+t).join(' ')}`;
   }
-}
-
-function copyPost(plat, btn) {
-  const el = document.getElementById('post-' + plat);
-  if (!el) return;
-  navigator.clipboard.writeText(el.textContent).then(() => {
-    btn.textContent = '✅ コピー済み！';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = '📋 コピー';
-      btn.classList.remove('copied');
-    }, 2000);
+  navigator.clipboard.writeText(allText.trim()).then(() => {
+    const btn = document.querySelector('.copy-all-btn');
+    btn.textContent = '✅ コピーしました！'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 全投稿をまとめてコピー'; btn.classList.remove('copied'); }, 2500);
   });
 }
 
-function escapeHtml(str) {
-  return String(str || '').replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  }[c]));
+function copyPost(plat, btn) {
+  const el = document.getElementById('post-'+plat);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    btn.textContent = '✅ コピー済み！'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 コピー'; btn.classList.remove('copied'); }, 2000);
+  });
 }
 
-function escapeAttr(str) {
-  return String(str || '').replace(/'/g, "\\'");
+function copyNote(btn) {
+  const n = generatedPosts['note'];
+  if (!n) return;
+  const text = `${n.title}\n\n${n.body}\n\nURL：${currentAppUrl}\n\nメモ：${n.memo}\n\nタグ：${(n.tags||[]).map(t=>'#'+t).join(' ')}`;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ コピー済み！'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 note全文コピー'; btn.classList.remove('copied'); }, 2000);
+  });
 }
+
+function copyNoteTitle(btn) {
+  const n = generatedPosts['note'];
+  if (!n) return;
+  navigator.clipboard.writeText(n.title).then(() => {
+    btn.textContent = '✅ コピー済み！'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📌 タイトルのみ'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
+  const postEl = document.getElementById('post-'+plat);
+  if (!postEl) return;
+  postEl.textContent = '再生成中...';
+  const desc = { x:'X：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。', threads:'Threads：500文字以内。語りかけ口調で共感を生む内容。', insta:'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。' };
+  const prompt = `アプリ名：${appName}、URL：${appUrl}${appDesc?'、説明：'+appDesc:''}${appTarget?'、ターゲット：'+appTarget:''}
+投稿者：68歳フリーランスWebマーケター。温かみのある語り口。
+【${PLATFORMS[plat].name}】${desc[plat]}
+前回と異なるアプローチで。投稿文のテキストのみ返してください。`;
+  try {
+    const res = await fetch(WORKER_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ max_tokens:400, messages:[{role:'user', content:prompt}] }) });
+    const data = await res.json();
+    const text = (data.content||[]).map(c=>c.text||'').join('').trim();
+    postEl.textContent = text;
+    generatedPosts[plat] = text;
+    const p = PLATFORMS[plat];
+    const charCount = [...text].length;
+    const countEl = postEl.parentElement.querySelector('.char-count');
+    if (countEl) { const isOver = p.limit && charCount > p.limit; countEl.textContent = `${charCount}文字${isOver?'（⚠️ 超過）':''}`; countEl.className = 'char-count'+(isOver?' over':''); }
+  } catch(e) { postEl.textContent = '再生成に失敗しました。'; }
+}
+
+async function regenNote(appName, appUrl, appDesc, appTarget) {
+  const bodyEl = document.getElementById('note-body');
+  if (bodyEl) bodyEl.textContent = '再生成中...';
+  const prompt = `あなたはnote記事のプロライターです。
+アプリ名：${appName}、URL：${appUrl}
+${appDesc?'説明：'+appDesc:''}${appTarget?'\nターゲット：'+appTarget:''}
+投稿者：68歳フリーランスWebマーケター。温かみのある語り口。
+前回と異なる切り口で、以下のJSON形式のみ返してください。
+{
+  "title": "刺さるタイトル（30文字以内）",
+  "body": "##大見出し ###小見出し 構造の2300文字程度の本文",
+  "memo": "ひとことメモ（50文字以内）",
+  "tags": ["タグ1","タグ2","タグ3","タグ4","タグ5","タグ6","タグ7"]
+}`;
+  try {
+    const res = await fetch(WORKER_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ max_tokens:2000, messages:[{role:'user', content:prompt}] }) });
+    const data = await res.json();
+    const text = (data.content||[]).map(c=>c.text||'').join('');
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) {
+      const n = JSON.parse(match[0]);
+      generatedPosts['note'] = n;
+      const titleEl = document.getElementById('note-title');
+      const memoEl  = document.getElementById('note-memo');
+      const tagsEl  = document.getElementById('note-tags');
+      if (titleEl) titleEl.textContent = n.title||'';
+      if (bodyEl)  bodyEl.textContent  = n.body||'';
+      if (memoEl)  memoEl.textContent  = n.memo||'';
+      if (tagsEl)  tagsEl.innerHTML    = (n.tags||[]).map(t=>`<span class="note-tag">#${t}</span>`).join('');
+    }
+  } catch(e) { if (bodyEl) bodyEl.textContent = '再生成に失敗しました。'; }
+}
+
+function escapeHtml(str) { return String(str||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(str) { return String(str||'').replace(/'/g,"\\'"); }
 </script>
 </body>
 </html>
