@@ -27,7 +27,12 @@
     padding: 28px 24px 24px; text-align: center; position: relative; overflow: hidden;
   }
   header::before { content: ''; position: absolute; width: 300px; height: 300px; background: rgba(255,255,255,0.06); border-radius: 50%; top: -100px; right: -60px; }
-  header h1 { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 0.05em; position: relative; }
+  header h1 {
+    font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 22px; font-weight: 900;
+    color: #fff; letter-spacing: 0.05em; position: relative;
+    cursor: pointer; display: inline-block;
+  }
+  header h1:hover { opacity: 0.85; }
   header p { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 6px; position: relative; }
   .badge { display: inline-block; background: rgba(255,255,255,0.18); color: #fff; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; position: relative; }
 
@@ -63,16 +68,19 @@
 
   .results-area { margin-top: 20px; display: none; }
 
+  .back-btn { width: 100%; padding: 12px; background: #fff; border: 1.5px solid #E0E8F8; border-radius: 12px; font-size: 14px; font-weight: 700; color: var(--muted); cursor: pointer; margin-bottom: 12px; transition: all 0.2s; }
+  .back-btn:hover { border-color: var(--blue-light); color: var(--blue-dark); }
+
   .copy-all-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #1a9a8a, var(--note-color)); color: #fff; border: none; border-radius: 12px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; font-weight: 900; cursor: pointer; margin-bottom: 16px; transition: opacity 0.2s, transform 0.1s; }
   .copy-all-btn:active { transform: scale(0.98); }
   .copy-all-btn.copied { background: #27AE60; }
 
   .result-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; border: 1px solid rgba(34,90,211,0.06); animation: fadeUp 0.4s ease forwards; opacity: 0; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-  .result-card:nth-child(2) { animation-delay: 0.05s; }
-  .result-card:nth-child(3) { animation-delay: 0.15s; }
-  .result-card:nth-child(4) { animation-delay: 0.25s; }
-  .result-card:nth-child(5) { animation-delay: 0.35s; }
+  .result-card:nth-child(3) { animation-delay: 0.05s; }
+  .result-card:nth-child(4) { animation-delay: 0.15s; }
+  .result-card:nth-child(5) { animation-delay: 0.25s; }
+  .result-card:nth-child(6) { animation-delay: 0.35s; }
 
   .card-header { padding: 14px 18px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #F0F4FF; }
   .card-header.x-header { background: #0a0a0a; color: #fff; }
@@ -88,7 +96,6 @@
   .char-count { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: right; }
   .char-count.over { color: #E74C3C; font-weight: 700; }
 
-  /* note専用 */
   .note-section { margin-bottom: 16px; }
   .note-label { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
   .note-title-box { background: linear-gradient(90deg, #f0fdfb, #e6faf7); border: 1.5px solid var(--note-color); border-radius: 10px; padding: 14px 16px; }
@@ -120,7 +127,7 @@
 
 <header>
   <div class="badge">✨ みっけシリーズ 公式ツール</div>
-  <h1>📣 SNS投稿ジェネレーター</h1>
+  <h1 onclick="window.scrollTo({top:0,behavior:'smooth'})">📣 SNS投稿ジェネレーター</h1>
   <p>アプリ名とURLを入れるだけで、4媒体の投稿文が完成</p>
 </header>
 
@@ -191,7 +198,13 @@ function togglePlat(el) {
   }
 }
 
-const loadingMessages = ['アプリの魅力を分析中...','各SNSのアルゴリズムを考慮中...','ターゲットに刺さる言葉を選んでいます...','note記事を執筆中です...','もう少しで完成です！'];
+const loadingMessages = [
+  'アプリの魅力を分析中...',
+  '各SNSのアルゴリズムを考慮中...',
+  'ターゲットに刺さる言葉を選んでいます...',
+  'note記事を執筆中です...',
+  'もう少しで完成です！'
+];
 
 async function generate() {
   const appName   = document.getElementById('appName').value.trim();
@@ -200,7 +213,10 @@ async function generate() {
   const appTarget = document.getElementById('appTarget').value.trim();
   const errorMsg  = document.getElementById('errorMsg');
   errorMsg.style.display = 'none';
-  if (!appName || !appUrl) { errorMsg.textContent = '⚠️ アプリ名とURLは必須です。'; errorMsg.style.display = 'block'; return; }
+  if (!appName || !appUrl) {
+    errorMsg.textContent = '⚠️ アプリ名とURLは必須です。';
+    errorMsg.style.display = 'block'; return;
+  }
 
   currentAppUrl = appUrl;
   generatedPosts = {};
@@ -215,7 +231,10 @@ async function generate() {
 
   let msgIdx = 0;
   const loadingText = document.getElementById('loadingText');
-  const loadingInterval = setInterval(() => { msgIdx = (msgIdx+1) % loadingMessages.length; loadingText.textContent = loadingMessages[msgIdx]; }, 1800);
+  const loadingInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % loadingMessages.length;
+    loadingText.textContent = loadingMessages[msgIdx];
+  }, 1800);
 
   const profile = `投稿者：68歳のフリーランスWebマーケター。「中小企業の宝探し」をモットーに、AIを活用した中小企業支援を20年以上行っている。温かみのある語り口で、専門用語を使わないわかりやすい発信が特徴。`;
 
@@ -231,17 +250,20 @@ async function generate() {
       };
       const snsPrompt = `あなたはSNSマーケティングの専門家です。
 アプリ名：${appName} URL：${appUrl}
-${appDesc?'説明：'+appDesc:''}${appTarget?'\nターゲット：'+appTarget:''}
+${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
 ${profile}
 以下のJSON形式のみで返してください。説明文・前置き・コードブロック不要。
-{\n${nonNotePlats.map(p=>`  "${p}": "投稿テキスト"`).join(',\n')}\n}
+{\n${nonNotePlats.map(p => `  "${p}": "投稿テキスト"`).join(',\n')}\n}
 各媒体の条件：
-${nonNotePlats.map(p=>`【${PLATFORMS[p].name}】${platDescriptions[p]}`).join('\n')}
+${nonNotePlats.map(p => `【${PLATFORMS[p].name}】${platDescriptions[p]}`).join('\n')}
 注意：自然な日本語・絵文字適度・宣伝くさくしない・文字数厳守・URLを含める`;
 
-      const snsRes = await fetch(WORKER_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ max_tokens:1000, messages:[{role:'user', content:snsPrompt}] }) });
+      const snsRes = await fetch(WORKER_URL, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ max_tokens: 1000, messages: [{ role: 'user', content: snsPrompt }] })
+      });
       const snsData = await snsRes.json();
-      const snsText = (snsData.content||[]).map(c=>c.text||'').join('');
+      const snsText = (snsData.content || []).map(c => c.text || '').join('');
       const snsMatch = snsText.match(/\{[\s\S]*\}/);
       if (snsMatch) snsPosts = JSON.parse(snsMatch[0]);
     }
@@ -250,7 +272,7 @@ ${nonNotePlats.map(p=>`【${PLATFORMS[p].name}】${platDescriptions[p]}`).join('
     if (activePlats.has('note')) {
       const notePrompt = `あなたはnote記事のプロライターです。
 アプリ名：${appName} URL：${appUrl}
-${appDesc?'説明：'+appDesc:''}${appTarget?'\nターゲット：'+appTarget:''}
+${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
 ${profile}
 以下のJSON形式のみで返してください。説明文・前置き・コードブロック不要。
 {
@@ -261,9 +283,12 @@ ${profile}
 }
 注意：tagsは必ず7個・#なしで返す・bodyは必ず見出し構造を使う・2300文字程度`;
 
-      const noteRes = await fetch(WORKER_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ max_tokens:2000, messages:[{role:'user', content:notePrompt}] }) });
+      const noteRes = await fetch(WORKER_URL, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ max_tokens: 2000, messages: [{ role: 'user', content: notePrompt }] })
+      });
       const noteJson = await noteRes.json();
-      const noteText = (noteJson.content||[]).map(c=>c.text||'').join('');
+      const noteText = (noteJson.content || []).map(c => c.text || '').join('');
       const noteMatch = noteText.match(/\{[\s\S]*\}/);
       if (noteMatch) noteData = JSON.parse(noteMatch[0]);
     }
@@ -271,6 +296,13 @@ ${profile}
     clearInterval(loadingInterval);
     loadingArea.style.display = 'none';
     resultsArea.style.display = 'block';
+
+    // 戻るボタン
+    const backBtn = document.createElement('button');
+    backBtn.className = 'back-btn';
+    backBtn.textContent = '⬆️ 入力画面に戻る';
+    backBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    resultsArea.appendChild(backBtn);
 
     // 全投稿まとめてコピーボタン
     const copyAllBtn = document.createElement('button');
@@ -296,7 +328,7 @@ ${profile}
         </div>
         <div class="card-body">
           <div class="post-text" id="post-${plat}">${escapeHtml(text)}</div>
-          <div class="char-count ${isOver?'over':''}">${charCount}文字${isOver?'（⚠️ 超過）':''}</div>
+          <div class="char-count ${isOver ? 'over' : ''}">${charCount}文字${isOver ? '（⚠️ 超過）' : ''}</div>
         </div>
         <div class="tips-bar">💡 ${p.tip}</div>
         <div class="card-actions">
@@ -309,7 +341,7 @@ ${profile}
     // noteカード
     if (noteData) {
       generatedPosts['note'] = noteData;
-      const tagsHtml = (noteData.tags||[]).map(t=>`<span class="note-tag">#${t}</span>`).join('');
+      const tagsHtml = (noteData.tags || []).map(t => `<span class="note-tag">#${t}</span>`).join('');
       const noteCard = document.createElement('div');
       noteCard.className = 'result-card';
       noteCard.innerHTML = `
@@ -321,12 +353,12 @@ ${profile}
         <div class="card-body">
           <div class="note-section">
             <div class="note-label">📌 タイトル</div>
-            <div class="note-title-box"><div class="note-title-text" id="note-title">${escapeHtml(noteData.title||'')}</div></div>
+            <div class="note-title-box"><div class="note-title-text" id="note-title">${escapeHtml(noteData.title || '')}</div></div>
           </div>
           <div class="note-section">
             <div class="note-label">📄 本文（##大見出し / ###小見出し 構造）</div>
-            <div class="note-body-text" id="note-body">${escapeHtml(noteData.body||'')}</div>
-            <div class="char-count">${[...(noteData.body||'')].length}文字</div>
+            <div class="note-body-text" id="note-body">${escapeHtml(noteData.body || '')}</div>
+            <div class="char-count">${[...(noteData.body || '')].length}文字</div>
           </div>
           <div class="note-section">
             <div class="note-url-box">
@@ -336,7 +368,7 @@ ${profile}
           </div>
           <div class="note-section">
             <div class="note-label">💬 ひとことメモ</div>
-            <div class="note-memo-text" id="note-memo">${escapeHtml(noteData.memo||'')}</div>
+            <div class="note-memo-text" id="note-memo">${escapeHtml(noteData.memo || '')}</div>
           </div>
           <div class="note-section">
             <div class="note-label">🏷️ ハッシュタグ</div>
@@ -352,10 +384,10 @@ ${profile}
       resultsArea.appendChild(noteCard);
     }
 
-  } catch(err) {
+  } catch (err) {
     clearInterval(loadingInterval);
     loadingArea.style.display = 'none';
-    errorMsg.textContent = '❌ ' + (err.message||'エラーが発生しました。再度お試しください。');
+    errorMsg.textContent = '❌ ' + (err.message || 'エラーが発生しました。再度お試しください。');
     errorMsg.style.display = 'block';
   }
   btn.disabled = false;
@@ -379,7 +411,7 @@ function copyAll() {
 }
 
 function copyPost(plat, btn) {
-  const el = document.getElementById('post-'+plat);
+  const el = document.getElementById('post-' + plat);
   if (!el) return;
   navigator.clipboard.writeText(el.textContent).then(() => {
     btn.textContent = '✅ コピー済み！'; btn.classList.add('copied');
@@ -407,24 +439,35 @@ function copyNoteTitle(btn) {
 }
 
 async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
-  const postEl = document.getElementById('post-'+plat);
+  const postEl = document.getElementById('post-' + plat);
   if (!postEl) return;
   postEl.textContent = '再生成中...';
-  const desc = { x:'X：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。', threads:'Threads：500文字以内。語りかけ口調で共感を生む内容。', insta:'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。' };
+  const desc = {
+    x:       'X：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。',
+    threads: 'Threads：500文字以内。語りかけ口調で共感を生む内容。',
+    insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
+  };
   const prompt = `アプリ名：${appName}、URL：${appUrl}${appDesc?'、説明：'+appDesc:''}${appTarget?'、ターゲット：'+appTarget:''}
 投稿者：68歳フリーランスWebマーケター。温かみのある語り口。
 【${PLATFORMS[plat].name}】${desc[plat]}
 前回と異なるアプローチで。投稿文のテキストのみ返してください。`;
   try {
-    const res = await fetch(WORKER_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ max_tokens:400, messages:[{role:'user', content:prompt}] }) });
+    const res = await fetch(WORKER_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ max_tokens: 400, messages: [{ role: 'user', content: prompt }] })
+    });
     const data = await res.json();
-    const text = (data.content||[]).map(c=>c.text||'').join('').trim();
+    const text = (data.content || []).map(c => c.text || '').join('').trim();
     postEl.textContent = text;
     generatedPosts[plat] = text;
     const p = PLATFORMS[plat];
     const charCount = [...text].length;
     const countEl = postEl.parentElement.querySelector('.char-count');
-    if (countEl) { const isOver = p.limit && charCount > p.limit; countEl.textContent = `${charCount}文字${isOver?'（⚠️ 超過）':''}`; countEl.className = 'char-count'+(isOver?' over':''); }
+    if (countEl) {
+      const isOver = p.limit && charCount > p.limit;
+      countEl.textContent = `${charCount}文字${isOver ? '（⚠️ 超過）' : ''}`;
+      countEl.className = 'char-count' + (isOver ? ' over' : '');
+    }
   } catch(e) { postEl.textContent = '再生成に失敗しました。'; }
 }
 
@@ -433,7 +476,7 @@ async function regenNote(appName, appUrl, appDesc, appTarget) {
   if (bodyEl) bodyEl.textContent = '再生成中...';
   const prompt = `あなたはnote記事のプロライターです。
 アプリ名：${appName}、URL：${appUrl}
-${appDesc?'説明：'+appDesc:''}${appTarget?'\nターゲット：'+appTarget:''}
+${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
 投稿者：68歳フリーランスWebマーケター。温かみのある語り口。
 前回と異なる切り口で、以下のJSON形式のみ返してください。
 {
@@ -443,9 +486,12 @@ ${appDesc?'説明：'+appDesc:''}${appTarget?'\nターゲット：'+appTarget:''
   "tags": ["タグ1","タグ2","タグ3","タグ4","タグ5","タグ6","タグ7"]
 }`;
   try {
-    const res = await fetch(WORKER_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ max_tokens:2000, messages:[{role:'user', content:prompt}] }) });
+    const res = await fetch(WORKER_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ max_tokens: 2000, messages: [{ role: 'user', content: prompt }] })
+    });
     const data = await res.json();
-    const text = (data.content||[]).map(c=>c.text||'').join('');
+    const text = (data.content || []).map(c => c.text || '').join('');
     const match = text.match(/\{[\s\S]*\}/);
     if (match) {
       const n = JSON.parse(match[0]);
@@ -453,16 +499,20 @@ ${appDesc?'説明：'+appDesc:''}${appTarget?'\nターゲット：'+appTarget:''
       const titleEl = document.getElementById('note-title');
       const memoEl  = document.getElementById('note-memo');
       const tagsEl  = document.getElementById('note-tags');
-      if (titleEl) titleEl.textContent = n.title||'';
-      if (bodyEl)  bodyEl.textContent  = n.body||'';
-      if (memoEl)  memoEl.textContent  = n.memo||'';
+      if (titleEl) titleEl.textContent = n.title || '';
+      if (bodyEl)  bodyEl.textContent  = n.body  || '';
+      if (memoEl)  memoEl.textContent  = n.memo  || '';
       if (tagsEl)  tagsEl.innerHTML    = (n.tags||[]).map(t=>`<span class="note-tag">#${t}</span>`).join('');
     }
   } catch(e) { if (bodyEl) bodyEl.textContent = '再生成に失敗しました。'; }
 }
 
-function escapeHtml(str) { return String(str||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function escapeAttr(str) { return String(str||'').replace(/'/g,"\\'"); }
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(str) {
+  return String(str || '').replace(/'/g, "\\'");
+}
 </script>
 </body>
 </html>
