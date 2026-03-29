@@ -23,7 +23,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 0 60px; }
 
-  header { background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-light) 100%); padding: 28px 24px 24px; text-align: center; position: relative; overflow: hidden; }
+  header { background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-light) 100%); padding: 20px 24px 18px; text-align: center; position: sticky; top: 0; z-index: 100; overflow: hidden; box-shadow: 0 2px 12px rgba(34,90,211,0.25); }
   header::before { content: ''; position: absolute; width: 300px; height: 300px; background: rgba(255,255,255,0.06); border-radius: 50%; top: -100px; right: -60px; }
   header h1 { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 0.05em; position: relative; cursor: pointer; display: inline-block; }
   header h1:hover { opacity: 0.85; }
