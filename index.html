@@ -12,6 +12,7 @@
     --blue-pale: #EBF3FF;
     --note-color: #41C9B4;
     --insta-color: #E1306C;
+    --fb-color: #1877F2;
     --bg: #F4F7FF;
     --card: #FFFFFF;
     --text: #1A1A2E;
@@ -22,16 +23,9 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 0 60px; }
 
-  header {
-    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-light) 100%);
-    padding: 28px 24px 24px; text-align: center; position: relative; overflow: hidden;
-  }
+  header { background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-light) 100%); padding: 28px 24px 24px; text-align: center; position: relative; overflow: hidden; }
   header::before { content: ''; position: absolute; width: 300px; height: 300px; background: rgba(255,255,255,0.06); border-radius: 50%; top: -100px; right: -60px; }
-  header h1 {
-    font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 22px; font-weight: 900;
-    color: #fff; letter-spacing: 0.05em; position: relative;
-    cursor: pointer; display: inline-block;
-  }
+  header h1 { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 0.05em; position: relative; cursor: pointer; display: inline-block; }
   header h1:hover { opacity: 0.85; }
   header p { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 6px; position: relative; }
   .badge { display: inline-block; background: rgba(255,255,255,0.18); color: #fff; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; position: relative; }
@@ -42,19 +36,24 @@
   .input-card h2 { font-size: 14px; font-weight: 700; color: var(--blue-dark); margin-bottom: 16px; }
   .field { margin-bottom: 14px; }
   label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.04em; }
+  .label-hint { font-size: 11px; font-weight: 400; color: #AAB8CC; margin-left: 6px; }
   input[type="text"], textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #E0E8F8; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 14px; color: var(--text); background: var(--blue-pale); outline: none; transition: border-color 0.2s; resize: none; }
   input[type="text"]:focus, textarea:focus { border-color: var(--blue-light); background: #fff; }
 
   .platform-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
   .ptag { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; }
-  .ptag-x { background: #f0f0f0; color: #222; }
-  .ptag-x.on { background: #111; color: #fff; border-color: #111; }
-  .ptag-threads { background: #f5f5f5; color: #555; }
+  .ptag-fb.on  { background: var(--fb-color); color: #fff; border-color: var(--fb-color); }
+  .ptag-fb     { background: #e8f0fe; color: var(--fb-color); }
+  .ptag-fbc.on { background: #0f5bbf; color: #fff; border-color: #0f5bbf; }
+  .ptag-fbc    { background: #e8f0fe; color: #0f5bbf; }
+  .ptag-x.on   { background: #111; color: #fff; border-color: #111; }
+  .ptag-x      { background: #f0f0f0; color: #222; }
   .ptag-threads.on { background: #333; color: #fff; border-color: #333; }
-  .ptag-insta { background: #fff0f5; color: var(--insta-color); }
+  .ptag-threads    { background: #f5f5f5; color: #555; }
   .ptag-insta.on { background: var(--insta-color); color: #fff; border-color: var(--insta-color); }
-  .ptag-note { background: #f0fdfb; color: #1a9a8a; }
+  .ptag-insta    { background: #fff0f5; color: var(--insta-color); }
   .ptag-note.on { background: var(--note-color); color: #fff; border-color: var(--note-color); }
+  .ptag-note    { background: #f0fdfb; color: #1a9a8a; }
 
   .generate-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--blue-dark), var(--blue-light)); color: #fff; border: none; border-radius: 12px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 16px; font-weight: 900; letter-spacing: 0.06em; cursor: pointer; margin-top: 8px; transition: opacity 0.2s, transform 0.1s; position: relative; overflow: hidden; }
   .generate-btn:active { transform: scale(0.98); }
@@ -78,23 +77,32 @@
   .result-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; border: 1px solid rgba(34,90,211,0.06); animation: fadeUp 0.4s ease forwards; opacity: 0; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   .result-card:nth-child(3) { animation-delay: 0.05s; }
-  .result-card:nth-child(4) { animation-delay: 0.15s; }
-  .result-card:nth-child(5) { animation-delay: 0.25s; }
-  .result-card:nth-child(6) { animation-delay: 0.35s; }
+  .result-card:nth-child(4) { animation-delay: 0.12s; }
+  .result-card:nth-child(5) { animation-delay: 0.19s; }
+  .result-card:nth-child(6) { animation-delay: 0.26s; }
+  .result-card:nth-child(7) { animation-delay: 0.33s; }
+  .result-card:nth-child(8) { animation-delay: 0.40s; }
 
   .card-header { padding: 14px 18px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #F0F4FF; }
-  .card-header.x-header { background: #0a0a0a; color: #fff; }
+  .card-header.fb-header      { background: var(--fb-color); color: #fff; }
+  .card-header.fbc-header     { background: #0f5bbf; color: #fff; }
+  .card-header.x-header       { background: #0a0a0a; color: #fff; }
   .card-header.threads-header { background: #1a1a1a; color: #fff; }
-  .card-header.insta-header { background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045); color: #fff; }
-  .card-header.note-header { background: linear-gradient(90deg, #2ba891, #41c9b4); color: #fff; }
+  .card-header.insta-header   { background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045); color: #fff; }
+  .card-header.note-header    { background: linear-gradient(90deg, #2ba891, #41c9b4); color: #fff; }
   .card-header .plat-name { font-weight: 900; font-size: 14px; font-family: 'Zen Kaku Gothic New', sans-serif; }
   .card-header .plat-icon { font-size: 20px; }
   .char-limit { margin-left: auto; font-size: 11px; opacity: 0.75; background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 20px; }
 
   .card-body { padding: 18px; }
-  .post-text { font-size: 14px; line-height: 1.8; color: var(--text); white-space: pre-wrap; word-break: break-word; min-height: 80px; }
+  .post-text { font-size: 14px; line-height: 1.8; color: var(--text); white-space: pre-wrap; word-break: break-word; min-height: 60px; }
   .char-count { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: right; }
   .char-count.over { color: #E74C3C; font-weight: 700; }
+
+  .fbc-info-box { background: #e8f0fe; border: 1.5px solid var(--fb-color); border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; }
+  .fbc-info-name { font-size: 14px; font-weight: 900; color: var(--fb-color); margin-bottom: 4px; }
+  .fbc-info-url  { font-size: 13px; color: #0f5bbf; word-break: break-all; }
+  .fbc-catch { font-size: 14px; line-height: 1.8; color: var(--text); white-space: pre-wrap; word-break: break-word; }
 
   .note-section { margin-bottom: 16px; }
   .note-label { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
@@ -128,37 +136,40 @@
 <header>
   <div class="badge">✨ みっけシリーズ 公式ツール</div>
   <h1 onclick="window.scrollTo({top:0,behavior:'smooth'})">📣 SNS投稿ジェネレーター</h1>
-  <p>アプリ名とURLを入れるだけで、4媒体の投稿文が完成</p>
+  <p>アプリ名とURLを入れるだけで、6媒体の投稿文が完成</p>
 </header>
 
 <div class="container">
   <div class="input-card">
     <h2>📝 アプリ情報を入力</h2>
+
     <div class="field">
-      <label>アプリ名 *</label>
-      <input type="text" id="appName" placeholder="例：採用みっけ　/　ひとり社長の経営会議室" />
+      <label>アプリ名 ＆ URL *<span class="label-hint">1行目にアプリ名、2行目にURLを入力</span></label>
+      <textarea id="appInfo" rows="2" placeholder="採用みっけ&#10;https://spc-jp.github.io/saiyou-mikke/"></textarea>
     </div>
-    <div class="field">
-      <label>URL *</label>
-      <input type="text" id="appUrl" placeholder="https://spc-jp.github.io/..." />
-    </div>
+
     <div class="field">
       <label>アプリの説明・ひと言メモ（任意）</label>
       <textarea id="appDesc" rows="3" placeholder="例：中小企業の採用担当者向けに、求人票のポイントをAIがアドバイス。無料でお試しできます。"></textarea>
     </div>
+
     <div class="field">
       <label>対象読者・ターゲット（任意）</label>
       <input type="text" id="appTarget" placeholder="例：税理士事務所の先生、ひとり社長、飲食店オーナー" />
     </div>
+
     <div class="field">
       <label>生成する媒体を選択</label>
       <div class="platform-tags">
-        <span class="ptag ptag-x on" data-plat="x" onclick="togglePlat(this)">𝕏 X（Twitter）</span>
+        <span class="ptag ptag-fbc on"     data-plat="fbc"     onclick="togglePlat(this)">💬 FBコメント</span>
+        <span class="ptag ptag-fb on"      data-plat="fb"      onclick="togglePlat(this)">📘 Facebook投稿</span>
+        <span class="ptag ptag-x on"       data-plat="x"       onclick="togglePlat(this)">𝕏 X</span>
         <span class="ptag ptag-threads on" data-plat="threads" onclick="togglePlat(this)">🧵 Threads</span>
-        <span class="ptag ptag-insta on" data-plat="insta" onclick="togglePlat(this)">📷 Instagram</span>
-        <span class="ptag ptag-note on" data-plat="note" onclick="togglePlat(this)">📝 note</span>
+        <span class="ptag ptag-insta on"   data-plat="insta"   onclick="togglePlat(this)">📷 Instagram</span>
+        <span class="ptag ptag-note on"    data-plat="note"    onclick="togglePlat(this)">📝 note</span>
       </div>
     </div>
+
     <button class="generate-btn" id="genBtn" onclick="generate()">
       <span class="shimmer"></span>
       🚀 SNS投稿を生成する
@@ -177,16 +188,21 @@
 
 <script>
 const WORKER_URL = 'https://sns-generator-api.yymmatsu.workers.dev';
+
 const PLATFORMS = {
-  x:       { name: 'X（Twitter）', icon: '𝕏',  limit: 140,  headerClass: 'x-header',      tip: '投稿直後30分の反応がカギ。リプライにも必ず返信を！' },
+  fbc:     { name: 'FBコメント用', icon: '💬', limit: 120,  headerClass: 'fbc-header',     tip: '投稿直後に最初のコメントとして貼り付けてください！' },
+  fb:      { name: 'Facebook投稿', icon: '📘', limit: 200,  headerClass: 'fb-header',      tip: 'URLなし投稿がリーチUPのコツ。最初のコメントにURLを貼りましょう！' },
+  x:       { name: 'X（Twitter）', icon: '𝕏',  limit: 140,  headerClass: 'x-header',       tip: '投稿直後30分の反応がカギ。リプライにも必ず返信を！' },
   threads: { name: 'Threads',      icon: '🧵', limit: 500,  headerClass: 'threads-header', tip: 'フォロワー外にも届きやすい。返信・引用を積極的に。' },
   insta:   { name: 'Instagram',    icon: '📷', limit: 2200, headerClass: 'insta-header',   tip: '「保存したくなる」内容が拡散の鍵。ハッシュタグは末尾に。' },
   note:    { name: 'note',         icon: '📝', limit: null, headerClass: 'note-header',    tip: '目次対応の見出し構成で、読者が最後まで読みやすくなります。' }
 };
 
-const activePlats = new Set(['x','threads','insta','note']);
+const PLAT_ORDER = ['fbc','fb','x','threads','insta','note'];
+const activePlats = new Set(['fbc','fb','x','threads','insta','note']);
 let generatedPosts = {};
-let currentAppUrl = '';
+let currentAppName = '';
+let currentAppUrl  = '';
 
 function togglePlat(el) {
   const plat = el.dataset.plat;
@@ -200,6 +216,7 @@ function togglePlat(el) {
 
 const loadingMessages = [
   'アプリの魅力を分析中...',
+  'Facebookリーチ最適化中...',
   '各SNSのアルゴリズムを考慮中...',
   'ターゲットに刺さる言葉を選んでいます...',
   'note記事を執筆中です...',
@@ -207,18 +224,28 @@ const loadingMessages = [
 ];
 
 async function generate() {
-  const appName   = document.getElementById('appName').value.trim();
-  const appUrl    = document.getElementById('appUrl').value.trim();
+  const appInfo   = document.getElementById('appInfo').value.trim();
   const appDesc   = document.getElementById('appDesc').value.trim();
   const appTarget = document.getElementById('appTarget').value.trim();
   const errorMsg  = document.getElementById('errorMsg');
   errorMsg.style.display = 'none';
+
+  const lines = appInfo.split('\n').map(l => l.trim()).filter(l => l);
+  if (lines.length < 2) {
+    errorMsg.textContent = '⚠️ 1行目にアプリ名、2行目にURLを入力してください。';
+    errorMsg.style.display = 'block'; return;
+  }
+
+  const appName = lines[0];
+  const appUrl  = lines[1];
+
   if (!appName || !appUrl) {
     errorMsg.textContent = '⚠️ アプリ名とURLは必須です。';
     errorMsg.style.display = 'block'; return;
   }
 
-  currentAppUrl = appUrl;
+  currentAppName = appName;
+  currentAppUrl  = appUrl;
   generatedPosts = {};
 
   const btn = document.getElementById('genBtn');
@@ -239,28 +266,38 @@ async function generate() {
   const profile = `投稿者：68歳のフリーランスWebマーケター。「中小企業の宝探し」をモットーに、AIを活用した中小企業支援を20年以上行っている。温かみのある語り口で、専門用語を使わないわかりやすい発信が特徴。`;
 
   try {
-    const nonNotePlats = [...activePlats].filter(p => p !== 'note');
+    const snsBatch = [...activePlats].filter(p => p !== 'note');
     let snsPosts = {};
 
-    if (nonNotePlats.length > 0) {
-      const platDescriptions = {
+    if (snsBatch.length > 0) {
+      const platDesc = {
+        fbc:     'FBコメント用キャッチコピー：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは別途表示するのでキャッチのみ返す。',
+        fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。中小企業オーナーが「わかる！」と共感する問いかけ・気づき型。絵文字を自然に使う。',
         x:       'X（旧Twitter）：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。',
         threads: 'Threads：500文字以内。語りかけ口調で共感を生む内容。絵文字を自然に使う。',
         insta:   'Instagram：500文字以内。改行を多く使い読みやすく。保存したくなる情報を入れる。ハッシュタグは末尾に7〜10個。'
       };
+
       const snsPrompt = `あなたはSNSマーケティングの専門家です。
 アプリ名：${appName} URL：${appUrl}
 ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
 ${profile}
+
 以下のJSON形式のみで返してください。説明文・前置き・コードブロック不要。
-{\n${nonNotePlats.map(p => `  "${p}": "投稿テキスト"`).join(',\n')}\n}
+{
+${snsBatch.map(p => `  "${p}": "投稿テキスト"`).join(',\n')}
+}
+
 各媒体の条件：
-${nonNotePlats.map(p => `【${PLATFORMS[p].name}】${platDescriptions[p]}`).join('\n')}
-注意：自然な日本語・絵文字適度・宣伝くさくしない・文字数厳守・URLを含める`;
+${snsBatch.map(p => `【${PLATFORMS[p].name}】${platDesc[p]}`).join('\n')}
+
+注意：自然な日本語・絵文字適度・宣伝くさくしない・文字数厳守
+Facebook投稿はURLを絶対に含めない
+FBコメント用はキャッチコピーのみ（アプリ名・URLは不要）`;
 
       const snsRes = await fetch(WORKER_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ max_tokens: 1000, messages: [{ role: 'user', content: snsPrompt }] })
+        body: JSON.stringify({ max_tokens: 1500, messages: [{ role: 'user', content: snsPrompt }] })
       });
       const snsData = await snsRes.json();
       const snsText = (snsData.content || []).map(c => c.text || '').join('');
@@ -274,6 +311,7 @@ ${nonNotePlats.map(p => `【${PLATFORMS[p].name}】${platDescriptions[p]}`).join
 アプリ名：${appName} URL：${appUrl}
 ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
 ${profile}
+
 以下のJSON形式のみで返してください。説明文・前置き・コードブロック不要。
 {
   "title": "読者が思わずクリックしたくなる刺さるキャッチコピータイトル（30文字以内）",
@@ -297,22 +335,96 @@ ${profile}
     loadingArea.style.display = 'none';
     resultsArea.style.display = 'block';
 
-    // 戻るボタン
     const backBtn = document.createElement('button');
     backBtn.className = 'back-btn';
     backBtn.textContent = '⬆️ 入力画面に戻る';
     backBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
     resultsArea.appendChild(backBtn);
 
-    // 全投稿まとめてコピーボタン
     const copyAllBtn = document.createElement('button');
     copyAllBtn.className = 'copy-all-btn';
     copyAllBtn.textContent = '📋 全投稿をまとめてコピー';
     copyAllBtn.onclick = copyAll;
     resultsArea.appendChild(copyAllBtn);
 
-    // X・Threads・Instagramカード
-    nonNotePlats.forEach(plat => {
+    PLAT_ORDER.forEach(plat => {
+      if (!activePlats.has(plat)) return;
+
+      if (plat === 'note') {
+        if (!noteData) return;
+        generatedPosts['note'] = noteData;
+        const tagsHtml = (noteData.tags || []).map(t => `<span class="note-tag">#${t}</span>`).join('');
+        const noteCard = document.createElement('div');
+        noteCard.className = 'result-card';
+        noteCard.innerHTML = `
+          <div class="card-header note-header">
+            <span class="plat-icon">📝</span>
+            <span class="plat-name">note 記事</span>
+            <span class="char-limit">2300文字・目次対応</span>
+          </div>
+          <div class="card-body">
+            <div class="note-section">
+              <div class="note-label">📌 タイトル</div>
+              <div class="note-title-box"><div class="note-title-text" id="note-title">${escapeHtml(noteData.title || '')}</div></div>
+            </div>
+            <div class="note-section">
+              <div class="note-label">📄 本文（##大見出し / ###小見出し 構造）</div>
+              <div class="note-body-text" id="note-body">${escapeHtml(noteData.body || '')}</div>
+              <div class="char-count">${[...(noteData.body || '')].length}文字</div>
+            </div>
+            <div class="note-section">
+              <div class="note-url-box">
+                <span class="note-url-label">🔗 URL</span>
+                <span class="note-url-text">${escapeHtml(appUrl)}</span>
+              </div>
+            </div>
+            <div class="note-section">
+              <div class="note-label">💬 ひとことメモ</div>
+              <div class="note-memo-text" id="note-memo">${escapeHtml(noteData.memo || '')}</div>
+            </div>
+            <div class="note-section">
+              <div class="note-label">🏷️ ハッシュタグ</div>
+              <div class="note-tags-box" id="note-tags">${tagsHtml}</div>
+            </div>
+          </div>
+          <div class="tips-bar">💡 ${PLATFORMS.note.tip}</div>
+          <div class="card-actions">
+            <button class="copy-btn" onclick="copyNote(this)">📋 note全文コピー</button>
+            <button class="copy-btn-note-title" onclick="copyNoteTitle(this)">📌 タイトルのみ</button>
+            <button class="regen-btn" onclick="regenNote('${escapeAttr(appName)}','${escapeAttr(appUrl)}','${escapeAttr(appDesc)}','${escapeAttr(appTarget)}')">🔄 再生成</button>
+          </div>`;
+        resultsArea.appendChild(noteCard);
+        return;
+      }
+
+      if (plat === 'fbc') {
+        const catchText = snsPosts['fbc'] || '';
+        generatedPosts['fbc'] = catchText;
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.innerHTML = `
+          <div class="card-header fbc-header">
+            <span class="plat-icon">💬</span>
+            <span class="plat-name">FBコメント用</span>
+            <span class="char-limit">投稿後すぐにコメント欄へ</span>
+          </div>
+          <div class="card-body">
+            <div class="fbc-info-box">
+              <div class="fbc-info-name">📱 ${escapeHtml(appName)}</div>
+              <div class="fbc-info-url">🔗 ${escapeHtml(appUrl)}</div>
+            </div>
+            <div class="fbc-catch" id="post-fbc">${escapeHtml(catchText)}</div>
+            <div class="char-count">${[...catchText].length}文字</div>
+          </div>
+          <div class="tips-bar">💡 ${PLATFORMS.fbc.tip}</div>
+          <div class="card-actions">
+            <button class="copy-btn" onclick="copyFbc(this)">📋 コピー（アプリ名＋URL＋キャッチ）</button>
+            <button class="regen-btn" onclick="regenSingle('fbc','${escapeAttr(appName)}','${escapeAttr(appUrl)}','${escapeAttr(appDesc)}','${escapeAttr(appTarget)}')">🔄 再生成</button>
+          </div>`;
+        resultsArea.appendChild(card);
+        return;
+      }
+
       const text = snsPosts[plat] || '';
       generatedPosts[plat] = text;
       const p = PLATFORMS[plat];
@@ -324,7 +436,7 @@ ${profile}
         <div class="card-header ${p.headerClass}">
           <span class="plat-icon">${p.icon}</span>
           <span class="plat-name">${p.name}</span>
-          <span class="char-limit">${p.limit}文字以内</span>
+          <span class="char-limit">${p.limit}文字以内${plat === 'fb' ? '・URLなし' : ''}</span>
         </div>
         <div class="card-body">
           <div class="post-text" id="post-${plat}">${escapeHtml(text)}</div>
@@ -338,52 +450,6 @@ ${profile}
       resultsArea.appendChild(card);
     });
 
-    // noteカード
-    if (noteData) {
-      generatedPosts['note'] = noteData;
-      const tagsHtml = (noteData.tags || []).map(t => `<span class="note-tag">#${t}</span>`).join('');
-      const noteCard = document.createElement('div');
-      noteCard.className = 'result-card';
-      noteCard.innerHTML = `
-        <div class="card-header note-header">
-          <span class="plat-icon">📝</span>
-          <span class="plat-name">note 記事</span>
-          <span class="char-limit">2300文字・目次対応</span>
-        </div>
-        <div class="card-body">
-          <div class="note-section">
-            <div class="note-label">📌 タイトル</div>
-            <div class="note-title-box"><div class="note-title-text" id="note-title">${escapeHtml(noteData.title || '')}</div></div>
-          </div>
-          <div class="note-section">
-            <div class="note-label">📄 本文（##大見出し / ###小見出し 構造）</div>
-            <div class="note-body-text" id="note-body">${escapeHtml(noteData.body || '')}</div>
-            <div class="char-count">${[...(noteData.body || '')].length}文字</div>
-          </div>
-          <div class="note-section">
-            <div class="note-url-box">
-              <span class="note-url-label">🔗 URL</span>
-              <span class="note-url-text">${escapeHtml(appUrl)}</span>
-            </div>
-          </div>
-          <div class="note-section">
-            <div class="note-label">💬 ひとことメモ</div>
-            <div class="note-memo-text" id="note-memo">${escapeHtml(noteData.memo || '')}</div>
-          </div>
-          <div class="note-section">
-            <div class="note-label">🏷️ ハッシュタグ</div>
-            <div class="note-tags-box" id="note-tags">${tagsHtml}</div>
-          </div>
-        </div>
-        <div class="tips-bar">💡 ${PLATFORMS.note.tip}</div>
-        <div class="card-actions">
-          <button class="copy-btn" onclick="copyNote(this)">📋 note全文コピー</button>
-          <button class="copy-btn-note-title" onclick="copyNoteTitle(this)">📌 タイトルのみ</button>
-          <button class="regen-btn" onclick="regenNote('${escapeAttr(appName)}','${escapeAttr(appUrl)}','${escapeAttr(appDesc)}','${escapeAttr(appTarget)}')">🔄 再生成</button>
-        </div>`;
-      resultsArea.appendChild(noteCard);
-    }
-
   } catch (err) {
     clearInterval(loadingInterval);
     loadingArea.style.display = 'none';
@@ -395,14 +461,17 @@ ${profile}
 
 function copyAll() {
   let allText = '';
-  ['x','threads','insta'].forEach(plat => {
+  PLAT_ORDER.forEach(plat => {
     if (!generatedPosts[plat]) return;
-    allText += `【${PLATFORMS[plat].name}】\n${generatedPosts[plat]}\n\n`;
+    if (plat === 'note') {
+      const n = generatedPosts['note'];
+      allText += `【note】\nタイトル：${n.title}\n\n${n.body}\n\nURL：${currentAppUrl}\n\nメモ：${n.memo}\n\nタグ：${(n.tags||[]).map(t=>'#'+t).join(' ')}\n\n`;
+    } else if (plat === 'fbc') {
+      allText += `【FBコメント用】\n${currentAppName}\n${currentAppUrl}\n${generatedPosts['fbc']}\n\n`;
+    } else {
+      allText += `【${PLATFORMS[plat].name}】\n${generatedPosts[plat]}\n\n`;
+    }
   });
-  if (generatedPosts['note']) {
-    const n = generatedPosts['note'];
-    allText += `【note】\nタイトル：${n.title}\n\n${n.body}\n\nURL：${currentAppUrl}\n\nメモ：${n.memo}\n\nタグ：${(n.tags||[]).map(t=>'#'+t).join(' ')}`;
-  }
   navigator.clipboard.writeText(allText.trim()).then(() => {
     const btn = document.querySelector('.copy-all-btn');
     btn.textContent = '✅ コピーしました！'; btn.classList.add('copied');
@@ -416,6 +485,16 @@ function copyPost(plat, btn) {
   navigator.clipboard.writeText(el.textContent).then(() => {
     btn.textContent = '✅ コピー済み！'; btn.classList.add('copied');
     setTimeout(() => { btn.textContent = '📋 コピー'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyFbc(btn) {
+  const catchEl = document.getElementById('post-fbc');
+  if (!catchEl) return;
+  const text = `${currentAppName}\n${currentAppUrl}\n${catchEl.textContent}`;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ コピー済み！'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 コピー（アプリ名＋URL＋キャッチ）'; btn.classList.remove('copied'); }, 2000);
   });
 }
 
@@ -443,6 +522,8 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
   if (!postEl) return;
   postEl.textContent = '再生成中...';
   const desc = {
+    fbc:     'FBコメント用キャッチコピーのみ：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
+    fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
     x:       'X：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。',
     threads: 'Threads：500文字以内。語りかけ口調で共感を生む内容。',
     insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
@@ -450,7 +531,7 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
   const prompt = `アプリ名：${appName}、URL：${appUrl}${appDesc?'、説明：'+appDesc:''}${appTarget?'、ターゲット：'+appTarget:''}
 投稿者：68歳フリーランスWebマーケター。温かみのある語り口。
 【${PLATFORMS[plat].name}】${desc[plat]}
-前回と異なるアプローチで。投稿文のテキストのみ返してください。`;
+前回と異なるアプローチで。テキストのみ返してください。`;
   try {
     const res = await fetch(WORKER_URL, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -460,13 +541,14 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
     const text = (data.content || []).map(c => c.text || '').join('').trim();
     postEl.textContent = text;
     generatedPosts[plat] = text;
-    const p = PLATFORMS[plat];
-    const charCount = [...text].length;
-    const countEl = postEl.parentElement.querySelector('.char-count');
-    if (countEl) {
-      const isOver = p.limit && charCount > p.limit;
-      countEl.textContent = `${charCount}文字${isOver ? '（⚠️ 超過）' : ''}`;
-      countEl.className = 'char-count' + (isOver ? ' over' : '');
+    if (PLATFORMS[plat].limit) {
+      const charCount = [...text].length;
+      const countEl = postEl.parentElement.querySelector('.char-count');
+      if (countEl) {
+        const isOver = charCount > PLATFORMS[plat].limit;
+        countEl.textContent = `${charCount}文字${isOver ? '（⚠️ 超過）' : ''}`;
+        countEl.className = 'char-count' + (isOver ? ' over' : '');
+      }
     }
   } catch(e) { postEl.textContent = '再生成に失敗しました。'; }
 }
