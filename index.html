@@ -13,6 +13,7 @@
     --note-color: #41C9B4;
     --insta-color: #E1306C;
     --fb-color: #1877F2;
+    --yb-color: #FF6B6B;
     --bg: #F4F7FF;
     --card: #FFFFFF;
     --text: #1A1A2E;
@@ -44,6 +45,8 @@
   .ptag { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; }
   .ptag-fb.on  { background: var(--fb-color); color: #fff; border-color: var(--fb-color); }
   .ptag-fb     { background: #e8f0fe; color: var(--fb-color); }
+  .ptag-yb.on  { background: var(--yb-color); color: #fff; border-color: var(--yb-color); }
+  .ptag-yb     { background: #FFF0F0; color: var(--yb-color); }
   .ptag-fbc.on { background: #0f5bbf; color: #fff; border-color: #0f5bbf; }
   .ptag-fbc    { background: #e8f0fe; color: #0f5bbf; }
   .ptag-x.on   { background: #111; color: #fff; border-color: #111; }
@@ -85,6 +88,7 @@
 
   .card-header { padding: 14px 18px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #F0F4FF; }
   .card-header.fb-header      { background: var(--fb-color); color: #fff; }
+  .card-header.yb-header      { background: var(--yb-color); color: #fff; }
   .card-header.fbc-header     { background: #0f5bbf; color: #fff; }
   .card-header.x-header       { background: #0a0a0a; color: #fff; }
   .card-header.threads-header { background: #1a1a1a; color: #fff; }
@@ -161,6 +165,7 @@
     <div class="field">
       <label>生成する媒体を選択</label>
       <div class="platform-tags">
+        <span class="ptag ptag-yb on"      data-plat="yb"      onclick="togglePlat(this)">💌 YBメッセージ</span>
         <span class="ptag ptag-fbc on"     data-plat="fbc"     onclick="togglePlat(this)">💬 FBコメント</span>
         <span class="ptag ptag-fb on"      data-plat="fb"      onclick="togglePlat(this)">📘 Facebook投稿</span>
         <span class="ptag ptag-x on"       data-plat="x"       onclick="togglePlat(this)">𝕏 X</span>
@@ -190,6 +195,7 @@
 const WORKER_URL = 'https://sns-generator-api.yymmatsu.workers.dev';
 
 const PLATFORMS = {
+  yb:      { name: 'YBメッセージ', icon: '💌', limit: 300,  headerClass: 'yb-header',      tip: '「一緒に考えましょう」といった寄り添い感のあるメッセージで優しく紹介します。' },
   fbc:     { name: 'FBコメント用', icon: '💬', limit: 120,  headerClass: 'fbc-header',     tip: '投稿直後に最初のコメントとして貼り付けてください！' },
   fb:      { name: 'Facebook投稿', icon: '📘', limit: 200,  headerClass: 'fb-header',      tip: 'URLなし投稿がリーチUPのコツ。最初のコメントにURLを貼りましょう！' },
   x:       { name: 'X（Twitter）', icon: '𝕏',  limit: 140,  headerClass: 'x-header',       tip: '投稿直後30分の反応がカギ。リプライにも必ず返信を！' },
@@ -198,8 +204,8 @@ const PLATFORMS = {
   note:    { name: 'note',         icon: '📝', limit: null, headerClass: 'note-header',    tip: '目次対応の見出し構成で、読者が最後まで読みやすくなります。' }
 };
 
-const PLAT_ORDER = ['fbc','fb','x','threads','insta','note'];
-const activePlats = new Set(['fbc','fb','x','threads','insta','note']);
+const PLAT_ORDER = ['yb','fbc','fb','x','threads','insta','note'];
+const activePlats = new Set(['yb','fbc','fb','x','threads','insta','note']);
 let generatedPosts = {};
 let currentAppName = '';
 let currentAppUrl  = '';
@@ -263,7 +269,7 @@ async function generate() {
     loadingText.textContent = loadingMessages[msgIdx];
   }, 1800);
 
-  const profile = `投稿者：68歳のフリーランスWebマーケター。「中小企業の宝探し」をモットーに、AIを活用した中小企業支援を20年以上行っている。温かみのある語り口で、専門用語を使わないわかりやすい発信が特徴。`;
+  const profile = `投稿者：70歳のWeb＆AIマーケター。アプリ開発のコンセプトは「考えることを、ひとりにしない」。孤独になりがちな経営者や担当者に寄り添い、専門用語（IT用語や横文字）を一切使わず、70歳ならではの人生経験を踏まえた優しく温かみのある語り口が特徴。士業からも「AIの説明が日本一わかりやすい」と評価されている。`;
 
   try {
     const snsBatch = [...activePlats].filter(p => p !== 'note');
@@ -271,6 +277,7 @@ async function generate() {
 
     if (snsBatch.length > 0) {
       const platDesc = {
+        yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
         fbc:     'FBコメント用キャッチコピー：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは別途表示するのでキャッチのみ返す。',
         fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。中小企業オーナーが「わかる！」と共感する問いかけ・気づき型。絵文字を自然に使う。',
         x:       'X（旧Twitter）：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。',
@@ -522,6 +529,7 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
   if (!postEl) return;
   postEl.textContent = '再生成中...';
   const desc = {
+    yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
     fbc:     'FBコメント用キャッチコピーのみ：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
     fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
     x:       'X：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。',
@@ -529,7 +537,7 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
     insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
   };
   const prompt = `アプリ名：${appName}、URL：${appUrl}${appDesc?'、説明：'+appDesc:''}${appTarget?'、ターゲット：'+appTarget:''}
-投稿者：68歳フリーランスWebマーケター。温かみのある語り口。
+投稿者：70歳Web＆AIマーケター。コンセプトは「考えることを、ひとりにしない」。専門用語を使わない、優しく温かみのある語り口。
 【${PLATFORMS[plat].name}】${desc[plat]}
 前回と異なるアプローチで。テキストのみ返してください。`;
   try {
@@ -559,7 +567,7 @@ async function regenNote(appName, appUrl, appDesc, appTarget) {
   const prompt = `あなたはnote記事のプロライターです。
 アプリ名：${appName}、URL：${appUrl}
 ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
-投稿者：68歳フリーランスWebマーケター。温かみのある語り口。
+投稿者：70歳Web＆AIマーケター。コンセプトは「考えることを、ひとりにしない」。専門用語を使わない、優しく温かみのある語り口。
 前回と異なる切り口で、以下のJSON形式のみ返してください。
 {
   "title": "刺さるタイトル（30文字以内）",
