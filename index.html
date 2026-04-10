@@ -14,6 +14,7 @@
     --insta-color: #E1306C;
     --fb-color: #1877F2;
     --yb-color: #FF6B6B;
+    --mj-color: #5865F2; /* Discord color for Midjourney */
     --bg: #F4F7FF;
     --card: #FFFFFF;
     --text: #1A1A2E;
@@ -41,6 +42,11 @@
   input[type="text"], textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #E0E8F8; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 14px; color: var(--text); background: var(--blue-pale); outline: none; transition: border-color 0.2s; resize: none; }
   input[type="text"]:focus, textarea:focus { border-color: var(--blue-light); background: #fff; }
 
+  .options-row { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .options-row .field { flex: 1; min-width: 140px; margin-bottom: 0; }
+  select { width: 100%; padding: 12px 14px; border: 1.5px solid #E0E8F8; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 13px; color: var(--text); background: var(--blue-pale) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237A8AAA'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 10px center/16px; outline: none; transition: border-color 0.2s; appearance: none; cursor: pointer; padding-right: 32px; }
+  select:focus { border-color: var(--blue-light); background-color: #fff; }
+
   .platform-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
   .ptag { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; }
   .ptag-fb.on  { background: var(--fb-color); color: #fff; border-color: var(--fb-color); }
@@ -57,6 +63,8 @@
   .ptag-insta    { background: #fff0f5; color: var(--insta-color); }
   .ptag-note.on { background: var(--note-color); color: #fff; border-color: var(--note-color); }
   .ptag-note    { background: #f0fdfb; color: #1a9a8a; }
+  .ptag-mj.on  { background: var(--mj-color); color: #fff; border-color: var(--mj-color); }
+  .ptag-mj     { background: #e8eaf6; color: var(--mj-color); }
 
   .generate-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--blue-dark), var(--blue-light)); color: #fff; border: none; border-radius: 12px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 16px; font-weight: 900; letter-spacing: 0.06em; cursor: pointer; margin-top: 8px; transition: opacity 0.2s, transform 0.1s; position: relative; overflow: hidden; }
   .generate-btn:active { transform: scale(0.98); }
@@ -79,12 +87,14 @@
 
   .result-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; border: 1px solid rgba(34,90,211,0.06); animation: fadeUp 0.4s ease forwards; opacity: 0; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .result-card:nth-child(n) { animation-fill-mode: both; }
   .result-card:nth-child(3) { animation-delay: 0.05s; }
   .result-card:nth-child(4) { animation-delay: 0.12s; }
   .result-card:nth-child(5) { animation-delay: 0.19s; }
   .result-card:nth-child(6) { animation-delay: 0.26s; }
   .result-card:nth-child(7) { animation-delay: 0.33s; }
   .result-card:nth-child(8) { animation-delay: 0.40s; }
+  .result-card:nth-child(9) { animation-delay: 0.47s; }
 
   .card-header { padding: 14px 18px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #F0F4FF; }
   .card-header.fb-header      { background: var(--fb-color); color: #fff; }
@@ -94,12 +104,16 @@
   .card-header.threads-header { background: #1a1a1a; color: #fff; }
   .card-header.insta-header   { background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045); color: #fff; }
   .card-header.note-header    { background: linear-gradient(90deg, #2ba891, #41c9b4); color: #fff; }
+  .card-header.mj-header      { background: linear-gradient(90deg, #2c2f33, var(--mj-color)); color: #fff; }
   .card-header .plat-name { font-weight: 900; font-size: 14px; font-family: 'Zen Kaku Gothic New', sans-serif; }
   .card-header .plat-icon { font-size: 20px; }
   .char-limit { margin-left: auto; font-size: 11px; opacity: 0.75; background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 20px; }
 
   .card-body { padding: 18px; }
   .post-text { font-size: 14px; line-height: 1.8; color: var(--text); white-space: pre-wrap; word-break: break-word; min-height: 60px; }
+  /* Midjourney用の特別スタイル */
+  .mj-prompt-box { background: #2c2f33; color: #e8eaf6; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 13px; margin-bottom: 12px; word-break: break-all; }
+  
   .char-count { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: right; }
   .char-count.over { color: #E74C3C; font-weight: 700; }
 
@@ -162,9 +176,51 @@
       <input type="text" id="appTarget" placeholder="例：税理士事務所の先生、ひとり社長、飲食店オーナー" />
     </div>
 
+    <div class="options-row">
+      <div class="field">
+        <label>🎯 記事の目的</label>
+        <select id="postPurpose">
+          <option value="信頼構築">🤝 信頼構築</option>
+          <option value="集客・問合せ">📩 集客・問合せ</option>
+          <option value="使い方紹介">💡 使い方紹介</option>
+          <option value="開発背景">🛠️ 開発背景</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>🗣️ トーン・語り口</label>
+        <select id="postTone">
+          <option value="語りかけ">💬 語りかけ</option>
+          <option value="ストーリー実話風">📖 ストーリー実話風</option>
+          <option value="解説風">🎓 解説風</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>🧩 構成パターン</label>
+        <select id="postStructure">
+          <option value="共感風">💖 共感風</option>
+          <option value="ノウハウ風">🧠 ノウハウ風</option>
+          <option value="問いかけ風">❓ 問いかけ風</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 追加: Midjourney画風オプション -->
+    <div class="field">
+      <label>🎨 サムネイルの画風（Midjourney用）</label>
+      <select id="mjStyle">
+        <option value="季節テーマ自動（現在の季節感を取り入れた魅力的なデザイン）">🌸 季節テーマ自動</option>
+        <option value="和モダンイラスト風">🍵 和モダンイラスト風</option>
+        <option value="日本アニメ風">🎬 日本アニメ風</option>
+        <option value="シネマティック風（映画のようなリアルで美しい構図）">🎥 シネマティック風</option>
+        <option value="サイバーパンク・ネオン未来都市風">🌃 ネオン未来都市風</option>
+        <option value="ラグジュアリー風（高級感のあるエレガントなデザイン）">✨ ラグジュアリー風</option>
+      </select>
+    </div>
+
     <div class="field">
       <label>生成する媒体を選択</label>
       <div class="platform-tags">
+        <span class="ptag ptag-mj on"      data-plat="mj"      onclick="togglePlat(this)">🎨 画像プロンプト</span>
         <span class="ptag ptag-yb on"      data-plat="yb"      onclick="togglePlat(this)">💌 YBメッセージ</span>
         <span class="ptag ptag-fbc on"     data-plat="fbc"     onclick="togglePlat(this)">💬 FBコメント</span>
         <span class="ptag ptag-fb on"      data-plat="fb"      onclick="togglePlat(this)">📘 Facebook投稿</span>
@@ -195,6 +251,7 @@
 const WORKER_URL = 'https://sns-generator-api.yymmatsu.workers.dev';
 
 const PLATFORMS = {
+  mj:      { name: 'Midjourneyプロンプト', icon: '🎨', limit: null, headerClass: 'mj-header',    tip: 'DiscordのMidjourneyボットにそのまま貼り付けて、1:1のサムネイル画像を生成できます。' },
   yb:      { name: 'YBメッセージ', icon: '💌', limit: 300,  headerClass: 'yb-header',      tip: '「一緒に考えましょう」といった寄り添い感のあるメッセージで優しく紹介します。' },
   fbc:     { name: 'FBコメント用', icon: '💬', limit: 120,  headerClass: 'fbc-header',     tip: '投稿直後に最初のコメントとして貼り付けてください！' },
   fb:      { name: 'Facebook投稿', icon: '📘', limit: 200,  headerClass: 'fb-header',      tip: 'URLなし投稿がリーチUPのコツ。最初のコメントにURLを貼りましょう！' },
@@ -204,8 +261,8 @@ const PLATFORMS = {
   note:    { name: 'note',         icon: '📝', limit: null, headerClass: 'note-header',    tip: '目次対応の見出し構成で、読者が最後まで読みやすくなります。' }
 };
 
-const PLAT_ORDER = ['yb','fbc','fb','x','threads','insta','note'];
-const activePlats = new Set(['yb','fbc','fb','x','threads','insta','note']);
+const PLAT_ORDER = ['mj','yb','fbc','fb','x','threads','insta','note'];
+const activePlats = new Set(['mj','yb','fbc','fb','x','threads','insta','note']);
 let generatedPosts = {};
 let currentAppName = '';
 let currentAppUrl  = '';
@@ -222,6 +279,7 @@ function togglePlat(el) {
 
 const loadingMessages = [
   'アプリの魅力を分析中...',
+  '画像生成プロンプトを作成中...',
   'Facebookリーチ最適化中...',
   '各SNSのアルゴリズムを考慮中...',
   'ターゲットに刺さる言葉を選んでいます...',
@@ -233,6 +291,12 @@ async function generate() {
   const appInfo   = document.getElementById('appInfo').value.trim();
   const appDesc   = document.getElementById('appDesc').value.trim();
   const appTarget = document.getElementById('appTarget').value.trim();
+  
+  const purpose   = document.getElementById('postPurpose').value;
+  const tone      = document.getElementById('postTone').value;
+  const structure = document.getElementById('postStructure').value;
+  const mjStyle   = document.getElementById('mjStyle').value; // 画風を取得
+
   const errorMsg  = document.getElementById('errorMsg');
   errorMsg.style.display = 'none';
 
@@ -277,6 +341,7 @@ async function generate() {
 
     if (snsBatch.length > 0) {
       const platDesc = {
+        mj:      `Midjourney用プロンプト：アプリのコンセプトを表現する1:1サムネイル画像のプロンプト。「${mjStyle}」の画風で作成すること。【英語プロンプト】と【日本語解説】の2段落構成で出力し、英語プロンプトは必ず "/imagine prompt: " から始め、末尾に ", --ar 1:1" を付与すること。`,
         yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
         fbc:     'FBコメント用キャッチコピー：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは別途表示するのでキャッチのみ返す。',
         fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。中小企業オーナーが「わかる！」と共感する問いかけ・気づき型。絵文字を自然に使う。',
@@ -285,14 +350,19 @@ async function generate() {
         insta:   'Instagram：500文字以内。改行を多く使い読みやすく。保存したくなる情報を入れる。ハッシュタグは末尾に7〜10個。'
       };
 
-      const snsPrompt = `あなたはSNSマーケティングの専門家です。
+      const snsPrompt = `あなたはSNSマーケティングと画像生成AIの専門家です。
 アプリ名：${appName} URL：${appUrl}
 ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
+【投稿の方向性】
+・目的：${purpose}
+・トーン：${tone}
+・構成パターン：${structure}
+
 ${profile}
 
 以下のJSON形式のみで返してください。説明文・前置き・コードブロック不要。
 {
-${snsBatch.map(p => `  "${p}": "投稿テキスト"`).join(',\n')}
+${snsBatch.map(p => `  "${p}": "出力テキスト"`).join(',\n')}
 }
 
 各媒体の条件：
@@ -304,7 +374,7 @@ FBコメント用はキャッチコピーのみ（アプリ名・URLは不要）
 
       const snsRes = await fetch(WORKER_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ max_tokens: 1500, messages: [{ role: 'user', content: snsPrompt }] })
+        body: JSON.stringify({ max_tokens: 2000, messages: [{ role: 'user', content: snsPrompt }] })
       });
       const snsData = await snsRes.json();
       const snsText = (snsData.content || []).map(c => c.text || '').join('');
@@ -317,6 +387,11 @@ FBコメント用はキャッチコピーのみ（アプリ名・URLは不要）
       const notePrompt = `あなたはnote記事のプロライターです。
 アプリ名：${appName} URL：${appUrl}
 ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
+【記事の方向性】
+・目的：${purpose}
+・トーン：${tone}
+・構成パターン：${structure}
+
 ${profile}
 
 以下のJSON形式のみで返してください。説明文・前置き・コードブロック不要。
@@ -432,6 +507,43 @@ ${profile}
         return;
       }
 
+      if (plat === 'mj') {
+        const text = snsPosts['mj'] || '';
+        generatedPosts['mj'] = text;
+        
+        // 英語のプロンプト部分（/imagine ...）と日本語解説をパースして見やすくする
+        let promptCode = '';
+        let descText = text;
+        const match = text.match(/(\/imagine prompt:.*?--ar 1:1)/i);
+        if (match) {
+            promptCode = match[1];
+            descText = text.replace(match[1], '').trim();
+            // 先頭や末尾の不要な装飾や改行を消す
+            descText = descText.replace(/^【日本語解説】\n*/i, '').replace(/^【英語プロンプト】\n*/i, '').trim();
+        }
+
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.innerHTML = `
+          <div class="card-header mj-header">
+            <span class="plat-icon">🎨</span>
+            <span class="plat-name">Midjourneyプロンプト</span>
+            <span class="char-limit">アスペクト比 1:1</span>
+          </div>
+          <div class="card-body">
+            <div class="mj-prompt-box" id="post-mj-code">${escapeHtml(promptCode || text)}</div>
+            <div class="post-text" id="post-mj-desc">${escapeHtml(promptCode ? descText : '')}</div>
+            <div style="display:none;" id="post-mj">${escapeHtml(text)}</div>
+          </div>
+          <div class="tips-bar">💡 ${PLATFORMS.mj.tip}</div>
+          <div class="card-actions">
+            <button class="copy-btn" onclick="copyMjCode(this)">📋 プロンプトのみコピー</button>
+            <button class="regen-btn" onclick="regenSingle('mj','${escapeAttr(appName)}','${escapeAttr(appUrl)}','${escapeAttr(appDesc)}','${escapeAttr(appTarget)}')">🔄 再生成</button>
+          </div>`;
+        resultsArea.appendChild(card);
+        return;
+      }
+
       const text = snsPosts[plat] || '';
       generatedPosts[plat] = text;
       const p = PLATFORMS[plat];
@@ -524,11 +636,30 @@ function copyNoteTitle(btn) {
   });
 }
 
+function copyMjCode(btn) {
+  const el = document.getElementById('post-mj-code');
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    btn.textContent = '✅ コピー済み！'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 プロンプトのみコピー'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
 async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
-  const postEl = document.getElementById('post-' + plat);
+  const postEl = plat === 'mj' ? document.getElementById('post-mj-code') : document.getElementById('post-' + plat);
   if (!postEl) return;
   postEl.textContent = '再生成中...';
+  if (plat === 'mj') {
+      document.getElementById('post-mj-desc').textContent = '';
+  }
+  
+  const purpose   = document.getElementById('postPurpose').value;
+  const tone      = document.getElementById('postTone').value;
+  const structure = document.getElementById('postStructure').value;
+  const mjStyle   = document.getElementById('mjStyle').value;
+
   const desc = {
+    mj:      `Midjourney用プロンプト：アプリのコンセプトを表現する1:1サムネイル画像のプロンプト。「${mjStyle}」の画風で作成すること。【英語プロンプト】と【日本語解説】の2段落構成で出力し、英語プロンプトは必ず "/imagine prompt: " から始め、末尾に ", --ar 1:1" を付与すること。`,
     yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
     fbc:     'FBコメント用キャッチコピーのみ：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
     fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
@@ -537,36 +668,58 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
     insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
   };
   const prompt = `アプリ名：${appName}、URL：${appUrl}${appDesc?'、説明：'+appDesc:''}${appTarget?'、ターゲット：'+appTarget:''}
+【投稿の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}
 投稿者：70歳Web＆AIマーケター。コンセプトは「考えることを、ひとりにしない」。専門用語を使わない、優しく温かみのある語り口。
 【${PLATFORMS[plat].name}】${desc[plat]}
 前回と異なるアプローチで。テキストのみ返してください。`;
   try {
     const res = await fetch(WORKER_URL, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ max_tokens: 400, messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({ max_tokens: 600, messages: [{ role: 'user', content: prompt }] })
     });
     const data = await res.json();
     const text = (data.content || []).map(c => c.text || '').join('').trim();
-    postEl.textContent = text;
-    generatedPosts[plat] = text;
-    if (PLATFORMS[plat].limit) {
-      const charCount = [...text].length;
-      const countEl = postEl.parentElement.querySelector('.char-count');
-      if (countEl) {
-        const isOver = charCount > PLATFORMS[plat].limit;
-        countEl.textContent = `${charCount}文字${isOver ? '（⚠️ 超過）' : ''}`;
-        countEl.className = 'char-count' + (isOver ? ' over' : '');
-      }
+    
+    if (plat === 'mj') {
+        let promptCode = '';
+        let descText = text;
+        const match = text.match(/(\/imagine prompt:.*?--ar 1:1)/i);
+        if (match) {
+            promptCode = match[1];
+            descText = text.replace(match[1], '').trim();
+            descText = descText.replace(/^【日本語解説】\n*/i, '').replace(/^【英語プロンプト】\n*/i, '').trim();
+        }
+        document.getElementById('post-mj-code').textContent = promptCode || text;
+        document.getElementById('post-mj-desc').textContent = promptCode ? descText : '';
+        document.getElementById('post-mj').textContent = text;
+    } else {
+        postEl.textContent = text;
+        if (PLATFORMS[plat].limit) {
+          const charCount = [...text].length;
+          const countEl = postEl.parentElement.querySelector('.char-count');
+          if (countEl) {
+            const isOver = charCount > PLATFORMS[plat].limit;
+            countEl.textContent = `${charCount}文字${isOver ? '（⚠️ 超過）' : ''}`;
+            countEl.className = 'char-count' + (isOver ? ' over' : '');
+          }
+        }
     }
+    generatedPosts[plat] = text;
   } catch(e) { postEl.textContent = '再生成に失敗しました。'; }
 }
 
 async function regenNote(appName, appUrl, appDesc, appTarget) {
   const bodyEl = document.getElementById('note-body');
   if (bodyEl) bodyEl.textContent = '再生成中...';
+
+  const purpose   = document.getElementById('postPurpose').value;
+  const tone      = document.getElementById('postTone').value;
+  const structure = document.getElementById('postStructure').value;
+
   const prompt = `あなたはnote記事のプロライターです。
 アプリ名：${appName}、URL：${appUrl}
 ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
+【記事の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}
 投稿者：70歳Web＆AIマーケター。コンセプトは「考えることを、ひとりにしない」。専門用語を使わない、優しく温かみのある語り口。
 前回と異なる切り口で、以下のJSON形式のみ返してください。
 {
