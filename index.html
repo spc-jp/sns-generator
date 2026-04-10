@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SNS投稿ジェネレーター</title>
+<link rel="icon" href="https://spc-jp.github.io/sns-generator/favicon.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -341,7 +342,7 @@ async function generate() {
 
     if (snsBatch.length > 0) {
       const platDesc = {
-        mj:      `Midjourney用プロンプト：アプリのコンセプトを表現する1:1サムネイル画像のプロンプト。「${mjStyle}」の画風で作成すること。【英語プロンプト】と【日本語解説】の2段落構成で出力し、英語プロンプトは必ず "/imagine prompt: " から始め、末尾に ", --ar 1:1" を付与すること。`,
+        mj:      `Midjourney用プロンプト：アプリのコンセプトを表現する1:1サムネイル画像のプロンプト。「${mjStyle}」の画風で作成すること。【英語プロンプト】と【日本語解説】の2段落構成で出力し、英語プロンプトの末尾に ", --ar 1:1" を付与すること（"/imagine prompt: "は絶対に出力しないでください）。`,
         yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
         fbc:     'FBコメント用キャッチコピー：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは別途表示するのでキャッチのみ返す。',
         fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。中小企業オーナーが「わかる！」と共感する問いかけ・気づき型。絵文字を自然に使う。',
@@ -511,15 +512,26 @@ ${profile}
         const text = snsPosts['mj'] || '';
         generatedPosts['mj'] = text;
         
-        // 英語のプロンプト部分（/imagine ...）と日本語解説をパースして見やすくする
-        let promptCode = '';
-        let descText = text;
-        const match = text.match(/(\/imagine prompt:.*?--ar 1:1)/i);
-        if (match) {
-            promptCode = match[1];
-            descText = text.replace(match[1], '').trim();
-            // 先頭や末尾の不要な装飾や改行を消す
-            descText = descText.replace(/^【日本語解説】\n*/i, '').replace(/^【英語プロンプト】\n*/i, '').trim();
+        let promptCode = text;
+        let descText = '';
+        
+        const enMatch = text.match(/【英語プロンプト】\n*([\s\S]*?)(?=\n*【日本語解説】|$)/);
+        const jaMatch = text.match(/【日本語解説】\n*([\s\S]*)$/);
+        
+        if (enMatch) {
+            promptCode = enMatch[1].replace(/^\/imagine prompt:\s*/i, '').trim();
+        } else {
+            const fallbackMatch = text.match(/(.*?--ar 1:1)/i);
+            if (fallbackMatch) {
+                promptCode = fallbackMatch[1].replace(/^\/imagine prompt:\s*/i, '').trim();
+            } else {
+                promptCode = text.replace(/^\/imagine prompt:\s*/i, '').trim();
+            }
+        }
+        if (jaMatch) {
+            descText = jaMatch[1].trim();
+        } else if (!enMatch) {
+            descText = text.replace(promptCode, '').replace(/^【日本語解説】\n*/i, '').trim();
         }
 
         const card = document.createElement('div');
@@ -531,8 +543,8 @@ ${profile}
             <span class="char-limit">アスペクト比 1:1</span>
           </div>
           <div class="card-body">
-            <div class="mj-prompt-box" id="post-mj-code">${escapeHtml(promptCode || text)}</div>
-            <div class="post-text" id="post-mj-desc">${escapeHtml(promptCode ? descText : '')}</div>
+            <div class="mj-prompt-box" id="post-mj-code">${escapeHtml(promptCode)}</div>
+            <div class="post-text" id="post-mj-desc">${escapeHtml(descText)}</div>
             <div style="display:none;" id="post-mj">${escapeHtml(text)}</div>
           </div>
           <div class="tips-bar">💡 ${PLATFORMS.mj.tip}</div>
@@ -579,14 +591,16 @@ ${profile}
 }
 
 function copyAll() {
-  let allText = '';
+  let allText = `${currentAppName}\n${currentAppUrl}\n\n`;
   PLAT_ORDER.forEach(plat => {
     if (!generatedPosts[plat]) return;
     if (plat === 'note') {
       const n = generatedPosts['note'];
       allText += `【note】\nタイトル：${n.title}\n\n${n.body}\n\nURL：${currentAppUrl}\n\nメモ：${n.memo}\n\nタグ：${(n.tags||[]).map(t=>'#'+t).join(' ')}\n\n`;
     } else if (plat === 'fbc') {
-      allText += `【FBコメント用】\n${currentAppName}\n${currentAppUrl}\n${generatedPosts['fbc']}\n\n`;
+      allText += `【FBコメント用】\n${generatedPosts['fbc']}\n\n`;
+    } else if (plat === 'mj') {
+      allText += `【${PLATFORMS[plat].name}】\n${generatedPosts[plat].replace(/\/imagine prompt:\s*/ig, '')}\n\n`;
     } else {
       allText += `【${PLATFORMS[plat].name}】\n${generatedPosts[plat]}\n\n`;
     }
@@ -659,7 +673,7 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
   const mjStyle   = document.getElementById('mjStyle').value;
 
   const desc = {
-    mj:      `Midjourney用プロンプト：アプリのコンセプトを表現する1:1サムネイル画像のプロンプト。「${mjStyle}」の画風で作成すること。【英語プロンプト】と【日本語解説】の2段落構成で出力し、英語プロンプトは必ず "/imagine prompt: " から始め、末尾に ", --ar 1:1" を付与すること。`,
+    mj:      `Midjourney用プロンプト：アプリのコンセプトを表現する1:1サムネイル画像のプロンプト。「${mjStyle}」の画風で作成すること。【英語プロンプト】と【日本語解説】の2段落構成で出力し、英語プロンプトの末尾に ", --ar 1:1" を付与すること（"/imagine prompt: "は絶対に出力しないでください）。`,
     yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
     fbc:     'FBコメント用キャッチコピーのみ：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
     fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
@@ -681,16 +695,30 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
     const text = (data.content || []).map(c => c.text || '').join('').trim();
     
     if (plat === 'mj') {
-        let promptCode = '';
-        let descText = text;
-        const match = text.match(/(\/imagine prompt:.*?--ar 1:1)/i);
-        if (match) {
-            promptCode = match[1];
-            descText = text.replace(match[1], '').trim();
-            descText = descText.replace(/^【日本語解説】\n*/i, '').replace(/^【英語プロンプト】\n*/i, '').trim();
+        let promptCode = text;
+        let descText = '';
+        
+        const enMatch = text.match(/【英語プロンプト】\n*([\s\S]*?)(?=\n*【日本語解説】|$)/);
+        const jaMatch = text.match(/【日本語解説】\n*([\s\S]*)$/);
+        
+        if (enMatch) {
+            promptCode = enMatch[1].replace(/^\/imagine prompt:\s*/i, '').trim();
+        } else {
+            const fallbackMatch = text.match(/(.*?--ar 1:1)/i);
+            if (fallbackMatch) {
+                promptCode = fallbackMatch[1].replace(/^\/imagine prompt:\s*/i, '').trim();
+            } else {
+                promptCode = text.replace(/^\/imagine prompt:\s*/i, '').trim();
+            }
         }
-        document.getElementById('post-mj-code').textContent = promptCode || text;
-        document.getElementById('post-mj-desc').textContent = promptCode ? descText : '';
+        if (jaMatch) {
+            descText = jaMatch[1].trim();
+        } else if (!enMatch) {
+            descText = text.replace(promptCode, '').replace(/^【日本語解説】\n*/i, '').trim();
+        }
+        
+        document.getElementById('post-mj-code').textContent = promptCode;
+        document.getElementById('post-mj-desc').textContent = descText;
         document.getElementById('post-mj').textContent = text;
     } else {
         postEl.textContent = text;
