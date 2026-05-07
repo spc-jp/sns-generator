@@ -187,6 +187,8 @@
           <option value="開発背景">🛠️ 開発背景</option>
           <option value="導入事例・成功事例（実際の利用者の声や変化のビフォーアフターを交える）">🏆 導入事例・成功事例</option>
           <option value="クスッと笑える（ユーモア・自虐ネタ・あるある等で親近感を湧かせる）">😆 クスッと笑える</option>
+          <option value="有料noteへの誘導（冒頭無料部分のチラ見せなどで購入へ繋げる）">🔗 有料noteへの誘導</option>
+          <option value="LINE/メルマガへのリスト誘導（プレゼント配布等でリストを獲得する）">🎁 リスト誘導(LINE等)</option>
         </select>
       </div>
       <div class="field">
@@ -197,12 +199,27 @@
           <option value="解説風">🎓 解説風</option>
         </select>
       </div>
+    </div>
+
+    <div class="options-row">
       <div class="field">
         <label>🧩 構成パターン</label>
         <select id="postStructure">
           <option value="共感風">💖 共感風</option>
           <option value="ノウハウ風">🧠 ノウハウ風</option>
           <option value="問いかけ風">❓ 問いかけ風</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>💰 読者を動かすフック</label>
+        <select id="postHook">
+          <option value="なし">指定なし</option>
+          <option value="チラ見せ・寸止め（情報を3割だけ見せ、続きを気にならせて誘導）">👀 チラ見せ・寸止め</option>
+          <option value="ビフォーアフター・逆転ストーリー（過去の悩みから成功への転機を描写し解決策へ誘導）">🔄 逆転ストーリー</option>
+          <option value="権威性・数字アピール（圧倒的な実績やデータを提示し信頼を得て誘導）">👑 権威性・数字アピール</option>
+          <option value="即効性・ハードル低下（「初心者でも今日からできる」と不安を取り除き損失回避を狙う）">⚡ 即効性・ハードル低下</option>
+          <option value="進行形のプロセス共有（現在進行形の挑戦の裏側を見せ、連載形式でファン化して誘導）">🏃 進行形プロセス共有</option>
+          <option value="限定性・割引オファー（「今だけ」「リポストで割引」など今すぐ行動する理由を提示して誘導）">⏳ 限定性・割引オファー</option>
         </select>
       </div>
     </div>
@@ -298,7 +315,8 @@ async function generate() {
   const purpose   = document.getElementById('postPurpose').value;
   const tone      = document.getElementById('postTone').value;
   const structure = document.getElementById('postStructure').value;
-  const mjStyle   = document.getElementById('mjStyle').value; // 画風を取得
+  const hook      = document.getElementById('postHook').value; // 追加: フックを取得
+  const mjStyle   = document.getElementById('mjStyle').value; 
 
   const errorMsg  = document.getElementById('errorMsg');
   errorMsg.style.display = 'none';
@@ -360,6 +378,7 @@ ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTar
 ・目的：${purpose}
 ・トーン：${tone}
 ・構成パターン：${structure}
+${hook !== 'なし' ? '・読者を動かすフック：' + hook : ''}
 
 ${profile}
 
@@ -394,6 +413,7 @@ ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTar
 ・目的：${purpose}
 ・トーン：${tone}
 ・構成パターン：${structure}
+${hook !== 'なし' ? '・読者を動かすフック：' + hook : ''}
 
 ${profile}
 
@@ -672,6 +692,7 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
   const purpose   = document.getElementById('postPurpose').value;
   const tone      = document.getElementById('postTone').value;
   const structure = document.getElementById('postStructure').value;
+  const hook      = document.getElementById('postHook').value; // 追加: フックを取得
   const mjStyle   = document.getElementById('mjStyle').value;
 
   const desc = {
@@ -684,7 +705,7 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
     insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
   };
   const prompt = `アプリ名：${appName}、URL：${appUrl}${appDesc?'、説明：'+appDesc:''}${appTarget?'、ターゲット：'+appTarget:''}
-【投稿の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}
+【投稿の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}${hook !== 'なし' ? '、読者を動かすフック：' + hook : ''}
 投稿者：70歳Web＆AIマーケター。コンセプトは「考えることを、ひとりにしない」。専門用語を使わない、優しく温かみのある語り口。
 【${PLATFORMS[plat].name}】${desc[plat]}
 前回と異なるアプローチで。テキストのみ返してください。`;
@@ -745,11 +766,12 @@ async function regenNote(appName, appUrl, appDesc, appTarget) {
   const purpose   = document.getElementById('postPurpose').value;
   const tone      = document.getElementById('postTone').value;
   const structure = document.getElementById('postStructure').value;
+  const hook      = document.getElementById('postHook').value; // 追加: フックを取得
 
   const prompt = `あなたはnote記事のプロライターです。
 アプリ名：${appName}、URL：${appUrl}
 ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
-【記事の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}
+【記事の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}${hook !== 'なし' ? '、読者を動かすフック：' + hook : ''}
 投稿者：70歳Web＆AIマーケター。コンセプトは「考えることを、ひとりにしない」。専門用語を使わない、優しく温かみのある語り口。
 前回と異なる切り口で、以下のJSON形式のみ返してください。
 {
