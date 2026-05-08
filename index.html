@@ -180,6 +180,25 @@
       <input type="text" id="appTarget" placeholder="例：税理士事務所の先生、ひとり社長、飲食店オーナー" />
     </div>
 
+    <!-- 追加: 収益化・誘導オプション群 -->
+    <div class="options-row">
+      <div class="field">
+        <label>📍 リンク誘導場所（SNS用）</label>
+        <select id="linkLocation">
+          <option value="直接リンクを貼る">🌐 直接リンクを貼る</option>
+          <option value="「プロフィールのリンクから」と誘導する（表示回数低下を防ぐ）">👤 プロフィールのリンクから</option>
+          <option value="「固定ポスト（リプライ）を見て」と誘導する">📌 固定ポストを見て</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>📣 リポスト割の訴求</label>
+        <select id="repostOffer">
+          <option value="なし">なし</option>
+          <option value="「この投稿をリポストしてくれたら、noteが割引（または無料）になります！」と文章に組み込む">🎁 リポストで割引/無料を訴求</option>
+        </select>
+      </div>
+    </div>
+
     <div class="options-row">
       <div class="field">
         <label>🎯 記事の目的</label>
@@ -213,6 +232,8 @@
           <option value="長文ストーリー型（挫折から克服までの時系列の物語性で読者を惹きつける）">📖 長文ストーリー型</option>
           <option value="ノウハウ凝縮型（ビジネス書1冊分の知識を箇条書きなどで濃密にまとめ、資産化を狙う）">🧠 ノウハウ凝縮型</option>
           <option value="共感風">💖 共感風</option>
+          <!-- 追加: note有料記事専用の構成 -->
+          <option value="超実践ノウハウ型（具体的な3ステップやテンプレを提供する構成。note記事用推奨）">📝 超実践ノウハウ型</option>
         </select>
       </div>
       <div class="field">
@@ -321,6 +342,10 @@ async function generate() {
   const structure = document.getElementById('postStructure').value;
   const hook      = document.getElementById('postHook').value;
   const mjStyle   = document.getElementById('mjStyle').value; 
+  
+  // 追加: リンク誘導とリポスト割
+  const linkLocation = document.getElementById('linkLocation').value;
+  const repostOffer  = document.getElementById('repostOffer').value;
 
   const errorMsg  = document.getElementById('errorMsg');
   errorMsg.style.display = 'none';
@@ -383,6 +408,8 @@ ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTar
 ・トーン：${tone}
 ・構成パターン：${structure}
 ${hook !== 'なし' ? '・読者を動かすフック：' + hook : ''}
+・リンク誘導の指示：${linkLocation}
+${repostOffer !== 'なし' ? '・プロモーション訴求：' + repostOffer : ''}
 
 ${profile}
 
@@ -396,7 +423,8 @@ ${snsBatch.map(p => `【${PLATFORMS[p].name}】${platDesc[p]}`).join('\n')}
 
 注意：自然な日本語・絵文字適度・宣伝くさくしない・文字数厳守
 Facebook投稿はURLを絶対に含めない
-FBコメント用はキャッチコピーのみ（アプリ名・URLは不要）`;
+FBコメント用はキャッチコピーのみ（アプリ名・URLは不要）
+誘導は必死な「売り込み」ではなく、「詳しくはnoteで」「良かったら参考にどうぞ」という“お知らせ感覚”を徹底すること。`;
 
       const snsRes = await fetch(WORKER_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -418,12 +446,13 @@ ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTar
 ・トーン：${tone}
 ・構成パターン：${structure}
 ${hook !== 'なし' ? '・読者を動かすフック：' + hook : ''}
+${repostOffer !== 'なし' ? '・プロモーション訴求：' + repostOffer : ''}
 
 ${profile}
 
 以下のJSON形式のみで返してください。説明文・前置き・コードブロック不要。
 {
-  "title": "読者が思わずクリックしたくなる刺さるキャッチコピータイトル（30文字以内）",
+  "title": "読者が得られる具体的な結果・数字・ベネフィットを含めた、思わずクリックしたくなる刺さるタイトル（30文字以内）",
   "body": "##大見出し\\n###小見出し の形式を使った2300文字程度の紹介記事本文。アプリの価値・使い方・こんな人におすすめ・導入効果などを丁寧に解説。URLへの誘導も本文中に1回含める。",
   "memo": "このアプリをひとことで表す印象的なキャッチフレーズ（50文字以内）",
   "tags": ["タグ1","タグ2","タグ3","タグ4","タグ5","タグ6","タグ7"]
@@ -728,6 +757,8 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
   const structure = document.getElementById('postStructure').value;
   const hook      = document.getElementById('postHook').value;
   const mjStyle   = document.getElementById('mjStyle').value;
+  const linkLocation = document.getElementById('linkLocation').value;
+  const repostOffer  = document.getElementById('repostOffer').value;
 
   const desc = {
     mj:      `Midjourney用プロンプト：アプリのコンセプトを表現する1:1サムネイル画像のプロンプト。「${mjStyle}」の画風で作成すること。【英語プロンプト】と【日本語解説】の2段落構成で出力し、英語プロンプトの末尾に ", --ar 1:1" を付与すること（"/imagine prompt: "は絶対に出力しないでください）。`,
@@ -739,10 +770,11 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
     insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
   };
   const prompt = `アプリ名：${appName}、URL：${appUrl}${appDesc?'、説明：'+appDesc:''}${appTarget?'、ターゲット：'+appTarget:''}
-【投稿の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}${hook !== 'なし' ? '、読者を動かすフック：' + hook : ''}
+【投稿の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}${hook !== 'なし' ? '、読者を動かすフック：' + hook : ''}、リンク誘導：${linkLocation}${repostOffer !== 'なし' ? '、プロモーション：' + repostOffer : ''}
 投稿者：70歳Web＆AIマーケター。コンセプトは「考えることを、ひとりにしない」。専門用語を使わない、優しく温かみのある語り口。
 【${PLATFORMS[plat].name}】${desc[plat]}
-前回と異なるアプローチで。テキストのみ返してください。`;
+前回と異なるアプローチで。テキストのみ返してください。
+誘導は必死な「売り込み」ではなく、“お知らせ感覚”を徹底すること。`;
   try {
     const res = await fetch(WORKER_URL, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -829,15 +861,16 @@ async function regenNote(appName, appUrl, appDesc, appTarget) {
   const tone      = document.getElementById('postTone').value;
   const structure = document.getElementById('postStructure').value;
   const hook      = document.getElementById('postHook').value;
+  const repostOffer  = document.getElementById('repostOffer').value;
 
   const prompt = `あなたはnote記事のプロライターです。
 アプリ名：${appName}、URL：${appUrl}
 ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
-【記事の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}${hook !== 'なし' ? '、読者を動かすフック：' + hook : ''}
+【記事の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}${hook !== 'なし' ? '、読者を動かすフック：' + hook : ''}${repostOffer !== 'なし' ? '、プロモーション訴求：' + repostOffer : ''}
 投稿者：70歳Web＆AIマーケター。コンセプトは「考えることを、ひとりにしない」。専門用語を使わない、優しく温かみのある語り口。
 前回と異なる切り口で、以下のJSON形式のみ返してください。
 {
-  "title": "刺さるタイトル（30文字以内）",
+  "title": "読者が得られる具体的な結果・数字・ベネフィットを含めた、思わずクリックしたくなる刺さるタイトル（30文字以内）",
   "body": "##大見出し ###小見出し 構造の2300文字程度の本文",
   "memo": "ひとことメモ（50文字以内）",
   "tags": ["タグ1","タグ2","タグ3","タグ4","タグ5","タグ6","タグ7"]
