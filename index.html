@@ -15,7 +15,7 @@
     --insta-color: #E1306C;
     --fb-color: #1877F2;
     --yb-color: #FF6B6B;
-    --mj-color: #5865F2; /* Discord color for Midjourney */
+    --mj-color: #5865F2;
     --bg: #F4F7FF;
     --card: #FFFFFF;
     --text: #1A1A2E;
@@ -112,7 +112,6 @@
 
   .card-body { padding: 18px; }
   .post-text { font-size: 14px; line-height: 1.8; color: var(--text); white-space: pre-wrap; word-break: break-word; min-height: 60px; }
-  /* Midjourney用の特別スタイル */
   .mj-prompt-box { background: #2c2f33; color: #e8eaf6; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 13px; margin-bottom: 12px; word-break: break-all; }
   
   .char-count { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: right; }
@@ -148,6 +147,10 @@
 
   .error-msg { background: #FFF0F0; border: 1px solid #FFD0D0; border-radius: 10px; padding: 14px 16px; color: #C0392B; font-size: 13px; margin-top: 12px; display: none; }
   footer { text-align: center; padding: 24px 0 0; font-size: 11px; color: var(--muted); }
+  
+  /* Threads二段構え用スタイル */
+  .threads-post-part { border-left: 3px solid #ddd; padding-left: 12px; margin-bottom: 12px; }
+  .threads-part-label { font-size: 11px; font-weight: bold; color: var(--muted); margin-bottom: 4px; }
 </style>
 </head>
 <body>
@@ -195,7 +198,8 @@
         <label>🗣️ トーン・語り口</label>
         <select id="postTone">
           <option value="語りかけ">💬 語りかけ</option>
-          <option value="ストーリー実話風">📖 ストーリー実話風</option>
+          <option value="ツッコミ代＆問いかけ（完璧にせず隙を残し、最後は読者へ問いかけてリプライを促す）">🙋 ツッコミ代＆問いかけ</option>
+          <option value="ポジティブ＆建設的（煽りや皮肉を避け、前向きなトーンでAIの評価を高める）">✨ ポジティブ＆建設的</option>
           <option value="解説風">🎓 解説風</option>
         </select>
       </div>
@@ -205,9 +209,10 @@
       <div class="field">
         <label>🧩 構成パターン</label>
         <select id="postStructure">
+          <option value="3ステップ構成（冒頭で共感喚起→本文で原因や体験談を解説→結びで行動を促す）">🔢 3ステップ構成</option>
+          <option value="長文ストーリー型（挫折から克服までの時系列の物語性で読者を惹きつける）">📖 長文ストーリー型</option>
+          <option value="ノウハウ凝縮型（ビジネス書1冊分の知識を箇条書きなどで濃密にまとめ、資産化を狙う）">🧠 ノウハウ凝縮型</option>
           <option value="共感風">💖 共感風</option>
-          <option value="ノウハウ風">🧠 ノウハウ風</option>
-          <option value="問いかけ風">❓ 問いかけ風</option>
         </select>
       </div>
       <div class="field">
@@ -224,7 +229,6 @@
       </div>
     </div>
 
-    <!-- 追加: Midjourney画風オプション -->
     <div class="field">
       <label>🎨 サムネイルの画風（Midjourney用）</label>
       <select id="mjStyle">
@@ -276,7 +280,7 @@ const PLATFORMS = {
   fbc:     { name: 'FBコメント用', icon: '💬', limit: 120,  headerClass: 'fbc-header',     tip: '投稿直後に最初のコメントとして貼り付けてください！' },
   fb:      { name: 'Facebook投稿', icon: '📘', limit: 200,  headerClass: 'fb-header',      tip: 'URLなし投稿がリーチUPのコツ。最初のコメントにURLを貼りましょう！' },
   x:       { name: 'X（Twitter）', icon: '𝕏',  limit: 140,  headerClass: 'x-header',       tip: '投稿直後30分の反応がカギ。リプライにも必ず返信を！' },
-  threads: { name: 'Threads',      icon: '🧵', limit: 500,  headerClass: 'threads-header', tip: 'フォロワー外にも届きやすい。返信・引用を積極的に。' },
+  threads: { name: 'Threads',      icon: '🧵', limit: 500,  headerClass: 'threads-header', tip: 'メイン投稿とコメントへの追記（二段構え）で、滞在時間を伸ばしつつ誘導します。' },
   insta:   { name: 'Instagram',    icon: '📷', limit: 2200, headerClass: 'insta-header',   tip: '「保存したくなる」内容が拡散の鍵。ハッシュタグは末尾に。' },
   note:    { name: 'note',         icon: '📝', limit: null, headerClass: 'note-header',    tip: '目次対応の見出し構成で、読者が最後まで読みやすくなります。' }
 };
@@ -315,7 +319,7 @@ async function generate() {
   const purpose   = document.getElementById('postPurpose').value;
   const tone      = document.getElementById('postTone').value;
   const structure = document.getElementById('postStructure').value;
-  const hook      = document.getElementById('postHook').value; // 追加: フックを取得
+  const hook      = document.getElementById('postHook').value;
   const mjStyle   = document.getElementById('mjStyle').value; 
 
   const errorMsg  = document.getElementById('errorMsg');
@@ -367,7 +371,7 @@ async function generate() {
         fbc:     'FBコメント用キャッチコピー：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは別途表示するのでキャッチのみ返す。',
         fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。中小企業オーナーが「わかる！」と共感する問いかけ・気づき型。絵文字を自然に使う。',
         x:       'X（旧Twitter）：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。',
-        threads: 'Threads：500文字以内。語りかけ口調で共感を生む内容。絵文字を自然に使う。',
+        threads: 'Threads：必ず「【メイン投稿】」と「【コメントへの追記】」の2段構成で出力すること。メイン投稿は1つの論点に絞り短く結論・共感を伝える。コメントへの追記で、体験談・手順・テンプレートなど具体的な深掘りを行い、最後にnoteやURLへ誘導する構成にする。全体で500文字以内。',
         insta:   'Instagram：500文字以内。改行を多く使い読みやすく。保存したくなる情報を入れる。ハッシュタグは末尾に7〜10個。'
       };
 
@@ -396,7 +400,7 @@ FBコメント用はキャッチコピーのみ（アプリ名・URLは不要）
 
       const snsRes = await fetch(WORKER_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ max_tokens: 2000, messages: [{ role: 'user', content: snsPrompt }] })
+        body: JSON.stringify({ max_tokens: 2500, messages: [{ role: 'user', content: snsPrompt }] })
       });
       const snsData = await snsRes.json();
       const snsText = (snsData.content || []).map(c => c.text || '').join('');
@@ -577,14 +581,38 @@ ${profile}
         resultsArea.appendChild(card);
         return;
       }
-
-      const text = snsPosts[plat] || '';
+      
+      // Threads用の特別表示処理
+      let text = snsPosts[plat] || '';
       generatedPosts[plat] = text;
       const p = PLATFORMS[plat];
       const charCount = [...text].length;
       const isOver = p.limit && charCount > p.limit;
       const card = document.createElement('div');
       card.className = 'result-card';
+      
+      let postContentHtml = `<div class="post-text" id="post-${plat}">${escapeHtml(text)}</div>`;
+      
+      if (plat === 'threads') {
+         // 二段構えのパース
+         const mainMatch = text.match(/【メイン投稿】\n*([\s\S]*?)(?=\n*【コメントへの追記】|$)/);
+         const commentMatch = text.match(/【コメントへの追記】\n*([\s\S]*)$/);
+         
+         if (mainMatch && commentMatch) {
+             postContentHtml = `
+               <div id="post-${plat}" style="display:none;">${escapeHtml(text)}</div>
+               <div class="threads-post-part">
+                 <div class="threads-part-label">📌 メイン投稿</div>
+                 <div class="post-text">${escapeHtml(mainMatch[1].trim())}</div>
+               </div>
+               <div class="threads-post-part" style="border-left-color: #0a0a0a;">
+                 <div class="threads-part-label">💬 コメントへの追記（深掘り・誘導）</div>
+                 <div class="post-text">${escapeHtml(commentMatch[1].trim())}</div>
+               </div>
+             `;
+         }
+      }
+
       card.innerHTML = `
         <div class="card-header ${p.headerClass}">
           <span class="plat-icon">${p.icon}</span>
@@ -592,7 +620,7 @@ ${profile}
           <span class="char-limit">${p.limit}文字以内${plat === 'fb' ? '・URLなし' : ''}</span>
         </div>
         <div class="card-body">
-          <div class="post-text" id="post-${plat}">${escapeHtml(text)}</div>
+          ${postContentHtml}
           <div class="char-count ${isOver ? 'over' : ''}">${charCount}文字${isOver ? '（⚠️ 超過）' : ''}</div>
         </div>
         <div class="tips-bar">💡 ${p.tip}</div>
@@ -684,7 +712,13 @@ function copyMjCode(btn) {
 async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
   const postEl = plat === 'mj' ? document.getElementById('post-mj-code') : document.getElementById('post-' + plat);
   if (!postEl) return;
-  postEl.textContent = '再生成中...';
+  
+  if (plat === 'threads') {
+     postEl.parentElement.innerHTML = '<div class="post-text" id="post-threads">再生成中...</div>';
+  } else {
+     postEl.textContent = '再生成中...';
+  }
+
   if (plat === 'mj') {
       document.getElementById('post-mj-desc').textContent = '';
   }
@@ -692,7 +726,7 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
   const purpose   = document.getElementById('postPurpose').value;
   const tone      = document.getElementById('postTone').value;
   const structure = document.getElementById('postStructure').value;
-  const hook      = document.getElementById('postHook').value; // 追加: フックを取得
+  const hook      = document.getElementById('postHook').value;
   const mjStyle   = document.getElementById('mjStyle').value;
 
   const desc = {
@@ -701,7 +735,7 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
     fbc:     'FBコメント用キャッチコピーのみ：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
     fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
     x:       'X：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。',
-    threads: 'Threads：500文字以内。語りかけ口調で共感を生む内容。',
+    threads: 'Threads：必ず「【メイン投稿】」と「【コメントへの追記】」の2段構成で出力すること。メイン投稿は1つの論点に絞り短く結論・共感を伝える。コメントへの追記で、体験談・手順・テンプレートなど具体的な深掘りを行い、最後にnoteやURLへ誘導する構成にする。全体で500文字以内。',
     insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
   };
   const prompt = `アプリ名：${appName}、URL：${appUrl}${appDesc?'、説明：'+appDesc:''}${appTarget?'、ターゲット：'+appTarget:''}
@@ -743,11 +777,36 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
         document.getElementById('post-mj-code').textContent = promptCode;
         document.getElementById('post-mj-desc').textContent = descText;
         document.getElementById('post-mj').textContent = text;
+    } else if (plat === 'threads') {
+        const cardBody = document.querySelector(`.threads-header`).nextElementSibling;
+        const mainMatch = text.match(/【メイン投稿】\n*([\s\S]*?)(?=\n*【コメントへの追記】|$)/);
+        const commentMatch = text.match(/【コメントへの追記】\n*([\s\S]*)$/);
+        
+        if (mainMatch && commentMatch) {
+            cardBody.innerHTML = `
+              <div id="post-threads" style="display:none;">${escapeHtml(text)}</div>
+              <div class="threads-post-part">
+                <div class="threads-part-label">📌 メイン投稿</div>
+                <div class="post-text">${escapeHtml(mainMatch[1].trim())}</div>
+              </div>
+              <div class="threads-post-part" style="border-left-color: #0a0a0a;">
+                <div class="threads-part-label">💬 コメントへの追記（深掘り・誘導）</div>
+                <div class="post-text">${escapeHtml(commentMatch[1].trim())}</div>
+              </div>
+              <div class="char-count ${[...text].length > 500 ? 'over' : ''}">${[...text].length}文字${[...text].length > 500 ? '（⚠️ 超過）' : ''}</div>
+            `;
+        } else {
+            cardBody.innerHTML = `
+              <div class="post-text" id="post-threads">${escapeHtml(text)}</div>
+              <div class="char-count ${[...text].length > 500 ? 'over' : ''}">${[...text].length}文字${[...text].length > 500 ? '（⚠️ 超過）' : ''}</div>
+            `;
+        }
     } else {
-        postEl.textContent = text;
+        const updatedPostEl = document.getElementById('post-' + plat);
+        updatedPostEl.textContent = text;
         if (PLATFORMS[plat].limit) {
           const charCount = [...text].length;
-          const countEl = postEl.parentElement.querySelector('.char-count');
+          const countEl = updatedPostEl.parentElement.querySelector('.char-count');
           if (countEl) {
             const isOver = charCount > PLATFORMS[plat].limit;
             countEl.textContent = `${charCount}文字${isOver ? '（⚠️ 超過）' : ''}`;
@@ -756,7 +815,10 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
         }
     }
     generatedPosts[plat] = text;
-  } catch(e) { postEl.textContent = '再生成に失敗しました。'; }
+  } catch(e) { 
+      const updatedPostEl = document.getElementById('post-' + plat);
+      if(updatedPostEl) updatedPostEl.textContent = '再生成に失敗しました。'; 
+  }
 }
 
 async function regenNote(appName, appUrl, appDesc, appTarget) {
@@ -766,7 +828,7 @@ async function regenNote(appName, appUrl, appDesc, appTarget) {
   const purpose   = document.getElementById('postPurpose').value;
   const tone      = document.getElementById('postTone').value;
   const structure = document.getElementById('postStructure').value;
-  const hook      = document.getElementById('postHook').value; // 追加: フックを取得
+  const hook      = document.getElementById('postHook').value;
 
   const prompt = `あなたはnote記事のプロライターです。
 アプリ名：${appName}、URL：${appUrl}
