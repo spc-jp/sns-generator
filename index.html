@@ -15,7 +15,7 @@
     --insta-color: #E1306C;
     --fb-color: #1877F2;
     --yb-color: #FF6B6B;
-    --mj-color: #5865F2;
+    --mj-color: #5865F2; /* Discord color for Midjourney */
     --bg: #F4F7FF;
     --card: #FFFFFF;
     --text: #1A1A2E;
@@ -47,6 +47,11 @@
   .options-row .field { flex: 1; min-width: 140px; margin-bottom: 0; }
   select { width: 100%; padding: 12px 14px; border: 1.5px solid #E0E8F8; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif; font-size: 13px; color: var(--text); background: var(--blue-pale) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237A8AAA'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 10px center/16px; outline: none; transition: border-color 0.2s; appearance: none; cursor: pointer; padding-right: 32px; }
   select:focus { border-color: var(--blue-light); background-color: #fff; }
+
+  .target-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .ttag { font-size: 12px; padding: 6px 12px; border-radius: 20px; font-weight: 500; cursor: pointer; border: 1px solid #E0E8F8; background: #fff; color: var(--muted); transition: all 0.2s; }
+  .ttag:hover { border-color: var(--blue-light); color: var(--blue-dark); }
+  .ttag.on { background: var(--blue-pale); border-color: var(--blue-light); color: var(--blue-dark); font-weight: 700; }
 
   .platform-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
   .ptag { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; }
@@ -148,7 +153,7 @@
   .error-msg { background: #FFF0F0; border: 1px solid #FFD0D0; border-radius: 10px; padding: 14px 16px; color: #C0392B; font-size: 13px; margin-top: 12px; display: none; }
   footer { text-align: center; padding: 24px 0 0; font-size: 11px; color: var(--muted); }
   
-  /* Threads二段構え用スタイル */
+  /* Threads・X 二段構え用スタイル */
   .threads-post-part { border-left: 3px solid #ddd; padding-left: 12px; margin-bottom: 12px; }
   .threads-part-label { font-size: 11px; font-weight: bold; color: var(--muted); margin-bottom: 4px; }
 </style>
@@ -166,21 +171,35 @@
     <h2>📝 アプリ情報を入力</h2>
 
     <div class="field">
-      <label>アプリ名 ＆ URL *<span class="label-hint">1行目にアプリ名、2行目にURLを入力</span></label>
-      <textarea id="appInfo" rows="2" placeholder="採用みっけ&#10;https://spc-jp.github.io/saiyou-mikke/"></textarea>
+      <label>アプリ名・サービス名 *</label>
+      <input type="text" id="appName" placeholder="例：採用みっけ" />
     </div>
 
     <div class="field">
-      <label>アプリの説明・ひと言メモ（任意）</label>
-      <textarea id="appDesc" rows="3" placeholder="例：中小企業の採用担当者向けに、求人票のポイントをAIがアドバイス。無料でお試しできます。"></textarea>
+      <label>URL *</label>
+      <input type="text" id="appUrl" placeholder="例：https://spc-jp.github.io/saiyou-mikke/" />
     </div>
 
     <div class="field">
-      <label>対象読者・ターゲット（任意）</label>
-      <input type="text" id="appTarget" placeholder="例：税理士事務所の先生、ひとり社長、飲食店オーナー" />
+      <label>キャッチコピー・アプリの説明（任意）</label>
+      <textarea id="appCatch" rows="3" placeholder="例：中小企業の採用担当者向けに、求人票のポイントをAIがアドバイス。無料でお試しできます。"></textarea>
     </div>
 
-    <!-- 追加: 収益化・誘導オプション群 -->
+    <div class="field">
+      <label>対象読者・ターゲット（複数選択可）</label>
+      <div class="target-tags" id="targetTags">
+        <span class="ttag" data-target="中小企業経営者・ひとり社長" onclick="toggleTarget(this)">🏢 中小企業経営者</span>
+        <span class="ttag" data-target="人事・採用担当者" onclick="toggleTarget(this)">👔 人事・採用担当</span>
+        <span class="ttag" data-target="飲食店・店舗オーナー" onclick="toggleTarget(this)">🛒 店舗オーナー</span>
+        <span class="ttag" data-target="士業（税理士・社労士など）" onclick="toggleTarget(this)">🖋️ 士業</span>
+        <span class="ttag" data-target="フリーランス・個人事業主" onclick="toggleTarget(this)">💻 フリーランス</span>
+        <span class="ttag" data-target="副業初心者・会社員" onclick="toggleTarget(this)">👩‍💻 副業初心者・会社員</span>
+        <span class="ttag" data-target="子育て中のママ・パパ" onclick="toggleTarget(this)">👶 子育て層</span>
+      </div>
+      <input type="text" id="appTargetFree" placeholder="その他のターゲットや詳細な条件があれば自由に入力" style="margin-top: 8px;" />
+    </div>
+
+    <!-- 収益化・誘導オプション群 -->
     <div class="options-row">
       <div class="field">
         <label>📍 リンク誘導場所（SNS用）</label>
@@ -232,7 +251,6 @@
           <option value="長文ストーリー型（挫折から克服までの時系列の物語性で読者を惹きつける）">📖 長文ストーリー型</option>
           <option value="ノウハウ凝縮型（ビジネス書1冊分の知識を箇条書きなどで濃密にまとめ、資産化を狙う）">🧠 ノウハウ凝縮型</option>
           <option value="共感風">💖 共感風</option>
-          <!-- 追加: note有料記事専用の構成 -->
           <option value="超実践ノウハウ型（具体的な3ステップやテンプレを提供する構成。note記事用推奨）">📝 超実践ノウハウ型</option>
         </select>
       </div>
@@ -250,6 +268,7 @@
       </div>
     </div>
 
+    <!-- Midjourney画風オプション -->
     <div class="field">
       <label>🎨 サムネイルの画風（Midjourney用）</label>
       <select id="mjStyle">
@@ -296,21 +315,37 @@
 const WORKER_URL = 'https://sns-generator-api.yymmatsu.workers.dev';
 
 const PLATFORMS = {
-  mj:      { name: 'Midjourneyプロンプト', icon: '🎨', limit: null, headerClass: 'mj-header',    tip: 'DiscordのMidjourneyボットにそのまま貼り付けて、1:1のサムネイル画像を生成できます。' },
+  mj:      { name: 'Midjourney', icon: '🎨', limitText: 'アスペクト比 1:1', headerClass: 'mj-header',    tip: 'DiscordのMidjourneyボットにそのまま貼り付けて、1:1のサムネイル画像を生成できます。' },
   yb:      { name: 'YBメッセージ', icon: '💌', limit: 300,  headerClass: 'yb-header',      tip: '「一緒に考えましょう」といった寄り添い感のあるメッセージで優しく紹介します。' },
   fbc:     { name: 'FBコメント用', icon: '💬', limit: 120,  headerClass: 'fbc-header',     tip: '投稿直後に最初のコメントとして貼り付けてください！' },
-  fb:      { name: 'Facebook投稿', icon: '📘', limit: 200,  headerClass: 'fb-header',      tip: 'URLなし投稿がリーチUPのコツ。最初のコメントにURLを貼りましょう！' },
-  x:       { name: 'X（Twitter）', icon: '𝕏',  limit: 140,  headerClass: 'x-header',       tip: '投稿直後30分の反応がカギ。リプライにも必ず返信を！' },
-  threads: { name: 'Threads',      icon: '🧵', limit: 500,  headerClass: 'threads-header', tip: 'メイン投稿とコメントへの追記（二段構え）で、滞在時間を伸ばしつつ誘導します。' },
+  fb:      { name: 'Facebook', icon: '📘', limit: 200, limitText: '200文字以内・URLなし', headerClass: 'fb-header',      tip: 'URLなし投稿がリーチUPのコツ。最初のコメントにURLを貼りましょう！' },
+  x:       { name: 'X（Twitter）', icon: '𝕏',  limitText: '1日3回分×二段構え',  headerClass: 'x-header',       tip: '朝・昼・夜の3回分。「メイン＋リプライ」の二段構えで滞在時間を伸ばします。' },
+  threads: { name: 'Threads',      icon: '🧵', limitText: '1日3回分×二段構え',  headerClass: 'threads-header', tip: '朝・昼・夜の3回分。「メイン＋コメント」の二段構えで誘導します。' },
   insta:   { name: 'Instagram',    icon: '📷', limit: 2200, headerClass: 'insta-header',   tip: '「保存したくなる」内容が拡散の鍵。ハッシュタグは末尾に。' },
-  note:    { name: 'note',         icon: '📝', limit: null, headerClass: 'note-header',    tip: '目次対応の見出し構成で、読者が最後まで読みやすくなります。' }
+  note:    { name: 'note',         icon: '📝', limitText: '2300文字・目次対応', headerClass: 'note-header',    tip: '目次対応の見出し構成で、読者が最後まで読みやすくなります。' }
 };
 
 const PLAT_ORDER = ['mj','yb','fbc','fb','x','threads','insta','note'];
 const activePlats = new Set(['mj','yb','fbc','fb','x','threads','insta','note']);
 let generatedPosts = {};
+
 let currentAppName = '';
 let currentAppUrl  = '';
+let currentAppCatch = '';
+let currentAppTarget = '';
+
+const activeTargets = new Set();
+
+function toggleTarget(el) {
+  const target = el.dataset.target;
+  if (activeTargets.has(target)) {
+    activeTargets.delete(target);
+    el.classList.remove('on');
+  } else {
+    activeTargets.add(target);
+    el.classList.add('on');
+  }
+}
 
 function togglePlat(el) {
   const plat = el.dataset.plat;
@@ -326,46 +361,43 @@ const loadingMessages = [
   'アプリの魅力を分析中...',
   '画像生成プロンプトを作成中...',
   'Facebookリーチ最適化中...',
-  '各SNSのアルゴリズムを考慮中...',
+  '1日3回分の二段構え投稿を作成中...',
   'ターゲットに刺さる言葉を選んでいます...',
   'note記事を執筆中です...',
   'もう少しで完成です！'
 ];
 
 async function generate() {
-  const appInfo   = document.getElementById('appInfo').value.trim();
-  const appDesc   = document.getElementById('appDesc').value.trim();
-  const appTarget = document.getElementById('appTarget').value.trim();
+  const appName   = document.getElementById('appName').value.trim();
+  const appUrl    = document.getElementById('appUrl').value.trim();
+  const appCatch  = document.getElementById('appCatch').value.trim();
+  
+  let targetList = Array.from(activeTargets);
+  const freeTarget = document.getElementById('appTargetFree').value.trim();
+  if (freeTarget) targetList.push(freeTarget);
+  const appTarget = targetList.join('、');
   
   const purpose   = document.getElementById('postPurpose').value;
   const tone      = document.getElementById('postTone').value;
   const structure = document.getElementById('postStructure').value;
   const hook      = document.getElementById('postHook').value;
   const mjStyle   = document.getElementById('mjStyle').value; 
-  
-  // 追加: リンク誘導とリポスト割
   const linkLocation = document.getElementById('linkLocation').value;
   const repostOffer  = document.getElementById('repostOffer').value;
 
   const errorMsg  = document.getElementById('errorMsg');
   errorMsg.style.display = 'none';
 
-  const lines = appInfo.split('\n').map(l => l.trim()).filter(l => l);
-  if (lines.length < 2) {
-    errorMsg.textContent = '⚠️ 1行目にアプリ名、2行目にURLを入力してください。';
-    errorMsg.style.display = 'block'; return;
-  }
-
-  const appName = lines[0];
-  const appUrl  = lines[1];
-
   if (!appName || !appUrl) {
     errorMsg.textContent = '⚠️ アプリ名とURLは必須です。';
-    errorMsg.style.display = 'block'; return;
+    errorMsg.style.display = 'block'; 
+    return;
   }
 
   currentAppName = appName;
   currentAppUrl  = appUrl;
+  currentAppCatch = appCatch;
+  currentAppTarget = appTarget;
   generatedPosts = {};
 
   const btn = document.getElementById('genBtn');
@@ -393,16 +425,18 @@ async function generate() {
       const platDesc = {
         mj:      `Midjourney用プロンプト：アプリのコンセプトを表現する1:1サムネイル画像のプロンプト。「${mjStyle}」の画風で作成すること。【英語プロンプト】と【日本語解説】の2段落構成で出力し、英語プロンプトの末尾に ", --ar 1:1" を付与すること（"/imagine prompt: "は絶対に出力しないでください）。`,
         yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
-        fbc:     'FBコメント用キャッチコピー：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは別途表示するのでキャッチのみ返す。',
-        fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。中小企業オーナーが「わかる！」と共感する問いかけ・気づき型。絵文字を自然に使う。',
-        x:       'X（旧Twitter）：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。',
-        threads: 'Threads：必ず「【メイン投稿】」と「【コメントへの追記】」の2段構成で出力すること。メイン投稿は1つの論点に絞り短く結論・共感を伝える。コメントへの追記で、体験談・手順・テンプレートなど具体的な深掘りを行い、最後にnoteやURLへ誘導する構成にする。全体で500文字以内。',
-        insta:   'Instagram：500文字以内。改行を多く使い読みやすく。保存したくなる情報を入れる。ハッシュタグは末尾に7〜10個。'
+        fbc:     'FBコメント用キャッチコピー：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
+        fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
+        x:       `X：【朝の投稿】【昼の投稿】【夜の投稿】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：140文字以内。共感の嵐を起こし、読者に強い興味を持たせる。\n②【リプライへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿で興味を持った読者がそのまま追記まで読み進めたくなる構成にすること。`,
+        threads: `Threads：【朝の投稿】【昼の投稿】【夜の投稿】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：共感の嵐を起こし、読者に強い興味を持たせる。\n②【コメントへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿からコメント欄へ移動するアクションを促し、滞在時間を伸ばす構成にすること。`,
+        insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
       };
 
       const snsPrompt = `あなたはSNSマーケティングと画像生成AIの専門家です。
-アプリ名：${appName} URL：${appUrl}
-${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
+アプリ名：${appName}
+URL：${appUrl}
+${appCatch ? 'キャッチ・説明：'+appCatch : ''}
+${appTarget ? 'ターゲット：'+appTarget : ''}
 【投稿の方向性】
 ・目的：${purpose}
 ・トーン：${tone}
@@ -428,7 +462,7 @@ FBコメント用はキャッチコピーのみ（アプリ名・URLは不要）
 
       const snsRes = await fetch(WORKER_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ max_tokens: 2500, messages: [{ role: 'user', content: snsPrompt }] })
+        body: JSON.stringify({ max_tokens: 4000, messages: [{ role: 'user', content: snsPrompt }] })
       });
       const snsData = await snsRes.json();
       const snsText = (snsData.content || []).map(c => c.text || '').join('');
@@ -439,8 +473,10 @@ FBコメント用はキャッチコピーのみ（アプリ名・URLは不要）
     let noteData = null;
     if (activePlats.has('note')) {
       const notePrompt = `あなたはnote記事のプロライターです。
-アプリ名：${appName} URL：${appUrl}
-${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
+アプリ名：${appName}
+URL：${appUrl}
+${appCatch ? 'キャッチ・説明：'+appCatch : ''}
+${appTarget ? 'ターゲット：'+appTarget : ''}
 【記事の方向性】
 ・目的：${purpose}
 ・トーン：${tone}
@@ -494,11 +530,14 @@ ${profile}
         const tagsHtml = (noteData.tags || []).map(t => `<span class="note-tag">#${t}</span>`).join('');
         const noteCard = document.createElement('div');
         noteCard.className = 'result-card';
+        
+        const limitDisplay = PLATFORMS.note.limitText || '制限なし';
+        
         noteCard.innerHTML = `
           <div class="card-header note-header">
             <span class="plat-icon">📝</span>
             <span class="plat-name">note 記事</span>
-            <span class="char-limit">2300文字・目次対応</span>
+            <span class="char-limit">${limitDisplay}</span>
           </div>
           <div class="card-body">
             <div class="note-section">
@@ -529,7 +568,7 @@ ${profile}
           <div class="card-actions">
             <button class="copy-btn" onclick="copyNote(this)">📋 note全文コピー</button>
             <button class="copy-btn-note-title" onclick="copyNoteTitle(this)">📌 タイトルのみ</button>
-            <button class="regen-btn" onclick="regenNote('${escapeAttr(appName)}','${escapeAttr(appUrl)}','${escapeAttr(appDesc)}','${escapeAttr(appTarget)}')">🔄 再生成</button>
+            <button class="regen-btn" onclick="regenNote()">🔄 再生成</button>
           </div>`;
         resultsArea.appendChild(noteCard);
         return;
@@ -557,7 +596,7 @@ ${profile}
           <div class="tips-bar">💡 ${PLATFORMS.fbc.tip}</div>
           <div class="card-actions">
             <button class="copy-btn" onclick="copyFbc(this)">📋 コピー（アプリ名＋URL＋キャッチ）</button>
-            <button class="regen-btn" onclick="regenSingle('fbc','${escapeAttr(appName)}','${escapeAttr(appUrl)}','${escapeAttr(appDesc)}','${escapeAttr(appTarget)}')">🔄 再生成</button>
+            <button class="regen-btn" onclick="regenSingle('fbc')">🔄 再生成</button>
           </div>`;
         resultsArea.appendChild(card);
         return;
@@ -595,7 +634,7 @@ ${profile}
           <div class="card-header mj-header">
             <span class="plat-icon">🎨</span>
             <span class="plat-name">Midjourneyプロンプト</span>
-            <span class="char-limit">アスペクト比 1:1</span>
+            <span class="char-limit">${PLATFORMS.mj.limitText}</span>
           </div>
           <div class="card-body">
             <div class="mj-prompt-box" id="post-mj-code">${escapeHtml(promptCode)}</div>
@@ -605,13 +644,13 @@ ${profile}
           <div class="tips-bar">💡 ${PLATFORMS.mj.tip}</div>
           <div class="card-actions">
             <button class="copy-btn" onclick="copyMjCode(this)">📋 プロンプトのみコピー</button>
-            <button class="regen-btn" onclick="regenSingle('mj','${escapeAttr(appName)}','${escapeAttr(appUrl)}','${escapeAttr(appDesc)}','${escapeAttr(appTarget)}')">🔄 再生成</button>
+            <button class="regen-btn" onclick="regenSingle('mj')">🔄 再生成</button>
           </div>`;
         resultsArea.appendChild(card);
         return;
       }
       
-      // Threads用の特別表示処理
+      // 他のプラットフォーム（X, Threads, FB, Instagram, YBなど）
       let text = snsPosts[plat] || '';
       generatedPosts[plat] = text;
       const p = PLATFORMS[plat];
@@ -620,33 +659,32 @@ ${profile}
       const card = document.createElement('div');
       card.className = 'result-card';
       
-      let postContentHtml = `<div class="post-text" id="post-${plat}">${escapeHtml(text)}</div>`;
+      let postContentHtml = '';
       
-      if (plat === 'threads') {
-         // 二段構えのパース
-         const mainMatch = text.match(/【メイン投稿】\n*([\s\S]*?)(?=\n*【コメントへの追記】|$)/);
-         const commentMatch = text.match(/【コメントへの追記】\n*([\s\S]*)$/);
-         
-         if (mainMatch && commentMatch) {
-             postContentHtml = `
-               <div id="post-${plat}" style="display:none;">${escapeHtml(text)}</div>
-               <div class="threads-post-part">
-                 <div class="threads-part-label">📌 メイン投稿</div>
-                 <div class="post-text">${escapeHtml(mainMatch[1].trim())}</div>
-               </div>
-               <div class="threads-post-part" style="border-left-color: #0a0a0a;">
-                 <div class="threads-part-label">💬 コメントへの追記（深掘り・誘導）</div>
-                 <div class="post-text">${escapeHtml(commentMatch[1].trim())}</div>
-               </div>
-             `;
-         }
+      if (plat === 'threads' || plat === 'x') {
+         // 3回分・二段構えのパースと装飾
+         const styledText = escapeHtml(text)
+             .replace(/【(?:1回目：)?朝の投稿.*?】/g, '<div style="background:#FFF8E1; color:#D35400; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☀️ 朝の投稿</div>')
+             .replace(/【(?:2回目：)?昼の投稿.*?】/g, '<div style="background:#E3F2FD; color:#1565C0; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☕ 昼の投稿</div>')
+             .replace(/【(?:3回目：)?夜の投稿.*?】/g, '<div style="background:#ECEFF1; color:#283593; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">🌙 夜の投稿</div>')
+             .replace(/【メイン投稿】/g, '<div class="threads-part-label" style="margin-top:8px;">📌 メイン投稿（What：共感・興味）</div>')
+             .replace(/【(コメント|リプライ)への追記】/g, '<div class="threads-part-label" style="margin-top:12px; color:#E1306C;">💬 $1への追記（Why/How：解説・誘導）</div>');
+
+         postContentHtml = `
+           <div id="post-${plat}" style="display:none;">${escapeHtml(text)}</div>
+           <div class="post-text" id="post-${plat}-display">${styledText}</div>
+         `;
+      } else {
+         postContentHtml = `<div class="post-text" id="post-${plat}">${escapeHtml(text)}</div>`;
       }
+
+      const limitDisplay = p.limitText || (p.limit ? p.limit + '文字以内' : '制限なし');
 
       card.innerHTML = `
         <div class="card-header ${p.headerClass}">
           <span class="plat-icon">${p.icon}</span>
           <span class="plat-name">${p.name}</span>
-          <span class="char-limit">${p.limit}文字以内${plat === 'fb' ? '・URLなし' : ''}</span>
+          <span class="char-limit">${limitDisplay}</span>
         </div>
         <div class="card-body">
           ${postContentHtml}
@@ -655,7 +693,7 @@ ${profile}
         <div class="tips-bar">💡 ${p.tip}</div>
         <div class="card-actions">
           <button class="copy-btn" onclick="copyPost('${plat}',this)">📋 コピー</button>
-          <button class="regen-btn" onclick="regenSingle('${plat}','${escapeAttr(appName)}','${escapeAttr(appUrl)}','${escapeAttr(appDesc)}','${escapeAttr(appTarget)}')">🔄 再生成</button>
+          <button class="regen-btn" onclick="regenSingle('${plat}')">🔄 再生成</button>
         </div>`;
       resultsArea.appendChild(card);
     });
@@ -738,14 +776,16 @@ function copyMjCode(btn) {
   });
 }
 
-async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
-  const postEl = plat === 'mj' ? document.getElementById('post-mj-code') : document.getElementById('post-' + plat);
-  if (!postEl) return;
+async function regenSingle(plat) {
+  const rawEl = plat === 'mj' ? document.getElementById('post-mj-code') : document.getElementById('post-' + plat);
+  const displayEl = document.getElementById('post-' + plat + '-display');
   
-  if (plat === 'threads') {
-     postEl.parentElement.innerHTML = '<div class="post-text" id="post-threads">再生成中...</div>';
+  if (!rawEl) return;
+  
+  if (displayEl) {
+      displayEl.innerHTML = '<div style="color:var(--muted);">🔄 再生成中...</div>';
   } else {
-     postEl.textContent = '再生成中...';
+      rawEl.textContent = '再生成中...';
   }
 
   if (plat === 'mj') {
@@ -765,20 +805,25 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
     yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
     fbc:     'FBコメント用キャッチコピーのみ：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
     fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
-    x:       'X：140文字以内。絵文字とインパクトある一言から始め、URLで締める。ハッシュタグ1〜2個。',
-    threads: 'Threads：必ず「【メイン投稿】」と「【コメントへの追記】」の2段構成で出力すること。メイン投稿は1つの論点に絞り短く結論・共感を伝える。コメントへの追記で、体験談・手順・テンプレートなど具体的な深掘りを行い、最後にnoteやURLへ誘導する構成にする。全体で500文字以内。',
+    x:       `X：【朝の投稿】【昼の投稿】【夜の投稿】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：140文字以内。共感の嵐を起こし、読者に強い興味を持たせる。\n②【リプライへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿で興味を持った読者がそのまま追記まで読み進めたくなる構成にすること。`,
+    threads: `Threads：【朝の投稿】【昼の投稿】【夜の投稿】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：共感の嵐を起こし、読者に強い興味を持たせる。\n②【コメントへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿からコメント欄へ移動するアクションを促し、滞在時間を伸ばす構成にすること。`,
     insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
   };
-  const prompt = `アプリ名：${appName}、URL：${appUrl}${appDesc?'、説明：'+appDesc:''}${appTarget?'、ターゲット：'+appTarget:''}
+  
+  const prompt = `アプリ名：${currentAppName}
+URL：${currentAppUrl}
+${currentAppCatch ? 'キャッチ・説明：'+currentAppCatch : ''}
+${currentAppTarget ? 'ターゲット：'+currentAppTarget : ''}
 【投稿の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}${hook !== 'なし' ? '、読者を動かすフック：' + hook : ''}、リンク誘導：${linkLocation}${repostOffer !== 'なし' ? '、プロモーション：' + repostOffer : ''}
 投稿者：70歳Web＆AIマーケター。コンセプトは「考えることを、ひとりにしない」。専門用語を使わない、優しく温かみのある語り口。
 【${PLATFORMS[plat].name}】${desc[plat]}
 前回と異なるアプローチで。テキストのみ返してください。
 誘導は必死な「売り込み」ではなく、“お知らせ感覚”を徹底すること。`;
+
   try {
     const res = await fetch(WORKER_URL, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ max_tokens: 600, messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({ max_tokens: 2500, messages: [{ role: 'user', content: prompt }] })
     });
     const data = await res.json();
     const text = (data.content || []).map(c => c.text || '').join('').trim();
@@ -809,36 +854,27 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
         document.getElementById('post-mj-code').textContent = promptCode;
         document.getElementById('post-mj-desc').textContent = descText;
         document.getElementById('post-mj').textContent = text;
-    } else if (plat === 'threads') {
-        const cardBody = document.querySelector(`.threads-header`).nextElementSibling;
-        const mainMatch = text.match(/【メイン投稿】\n*([\s\S]*?)(?=\n*【コメントへの追記】|$)/);
-        const commentMatch = text.match(/【コメントへの追記】\n*([\s\S]*)$/);
+    } else if (plat === 'threads' || plat === 'x') {
+        const styledText = escapeHtml(text)
+             .replace(/【(?:1回目：)?朝の投稿.*?】/g, '<div style="background:#FFF8E1; color:#D35400; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☀️ 朝の投稿</div>')
+             .replace(/【(?:2回目：)?昼の投稿.*?】/g, '<div style="background:#E3F2FD; color:#1565C0; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☕ 昼の投稿</div>')
+             .replace(/【(?:3回目：)?夜の投稿.*?】/g, '<div style="background:#ECEFF1; color:#283593; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">🌙 夜の投稿</div>')
+             .replace(/【メイン投稿】/g, '<div class="threads-part-label" style="margin-top:8px;">📌 メイン投稿（What：共感・興味）</div>')
+             .replace(/【(コメント|リプライ)への追記】/g, '<div class="threads-part-label" style="margin-top:12px; color:#E1306C;">💬 $1への追記（Why/How：解説・誘導）</div>');
+
+        rawEl.textContent = text;
+        displayEl.innerHTML = styledText;
         
-        if (mainMatch && commentMatch) {
-            cardBody.innerHTML = `
-              <div id="post-threads" style="display:none;">${escapeHtml(text)}</div>
-              <div class="threads-post-part">
-                <div class="threads-part-label">📌 メイン投稿</div>
-                <div class="post-text">${escapeHtml(mainMatch[1].trim())}</div>
-              </div>
-              <div class="threads-post-part" style="border-left-color: #0a0a0a;">
-                <div class="threads-part-label">💬 コメントへの追記（深掘り・誘導）</div>
-                <div class="post-text">${escapeHtml(commentMatch[1].trim())}</div>
-              </div>
-              <div class="char-count ${[...text].length > 500 ? 'over' : ''}">${[...text].length}文字${[...text].length > 500 ? '（⚠️ 超過）' : ''}</div>
-            `;
-        } else {
-            cardBody.innerHTML = `
-              <div class="post-text" id="post-threads">${escapeHtml(text)}</div>
-              <div class="char-count ${[...text].length > 500 ? 'over' : ''}">${[...text].length}文字${[...text].length > 500 ? '（⚠️ 超過）' : ''}</div>
-            `;
+        const countEl = displayEl.parentElement.querySelector('.char-count');
+        if (countEl) {
+            countEl.textContent = `${[...text].length}文字`;
+            countEl.className = 'char-count';
         }
     } else {
-        const updatedPostEl = document.getElementById('post-' + plat);
-        updatedPostEl.textContent = text;
+        rawEl.textContent = text;
         if (PLATFORMS[plat].limit) {
           const charCount = [...text].length;
-          const countEl = updatedPostEl.parentElement.querySelector('.char-count');
+          const countEl = rawEl.parentElement.querySelector('.char-count');
           if (countEl) {
             const isOver = charCount > PLATFORMS[plat].limit;
             countEl.textContent = `${charCount}文字${isOver ? '（⚠️ 超過）' : ''}`;
@@ -848,12 +884,15 @@ async function regenSingle(plat, appName, appUrl, appDesc, appTarget) {
     }
     generatedPosts[plat] = text;
   } catch(e) { 
-      const updatedPostEl = document.getElementById('post-' + plat);
-      if(updatedPostEl) updatedPostEl.textContent = '再生成に失敗しました。'; 
+      if (displayEl) {
+          displayEl.innerHTML = '<div style="color:#C0392B;">❌ 再生成に失敗しました。</div>';
+      } else if (rawEl) {
+          rawEl.textContent = '再生成に失敗しました。'; 
+      }
   }
 }
 
-async function regenNote(appName, appUrl, appDesc, appTarget) {
+async function regenNote() {
   const bodyEl = document.getElementById('note-body');
   if (bodyEl) bodyEl.textContent = '再生成中...';
 
@@ -864,8 +903,10 @@ async function regenNote(appName, appUrl, appDesc, appTarget) {
   const repostOffer  = document.getElementById('repostOffer').value;
 
   const prompt = `あなたはnote記事のプロライターです。
-アプリ名：${appName}、URL：${appUrl}
-${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTarget : ''}
+アプリ名：${currentAppName}
+URL：${currentAppUrl}
+${currentAppCatch ? 'キャッチ・説明：'+currentAppCatch : ''}
+${currentAppTarget ? 'ターゲット：'+currentAppTarget : ''}
 【記事の方向性】目的：${purpose}、トーン：${tone}、構成パターン：${structure}${hook !== 'なし' ? '、読者を動かすフック：' + hook : ''}${repostOffer !== 'なし' ? '、プロモーション訴求：' + repostOffer : ''}
 投稿者：70歳Web＆AIマーケター。コンセプトは「考えることを、ひとりにしない」。専門用語を使わない、優しく温かみのある語り口。
 前回と異なる切り口で、以下のJSON形式のみ返してください。
@@ -899,9 +940,6 @@ ${appDesc ? '説明：'+appDesc : ''}${appTarget ? '\nターゲット：'+appTar
 
 function escapeHtml(str) {
   return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function escapeAttr(str) {
-  return String(str || '').replace(/'/g, "\\'");
 }
 </script>
 </body>
