@@ -261,6 +261,7 @@
         <label>💰 読者を動かすフック</label>
         <select id="postHook">
           <option value="なし">指定なし</option>
+          <option value="フォロー必須アピール（①フォローするメリットが1行で伝わる、②読者の1ヶ月後の変化が見える、③この人だけが知ってる独自情報がある、の3要素を入れ、フォローしないと損すると思わせる）">🚨 フォロー必須アピール（変化と独自性）</option>
           <option value="チラ見せ・寸止め（情報を3割だけ見せ、続きを気にならせて誘導）">👀 チラ見せ・寸止め</option>
           <option value="ビフォーアフター・逆転ストーリー（過去の悩みから成功への転機を描写し解決策へ誘導）">🔄 逆転ストーリー</option>
           <option value="権威性・数字アピール（圧倒的な実績やデータを提示し信頼を得て誘導）">👑 権威性・数字アピール</option>
@@ -430,8 +431,8 @@ async function generate() {
         yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
         fbc:     'FBコメント用キャッチコピー：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
         fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
-        x:       `X：【朝の投稿】【昼の投稿】【夜の投稿】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：140文字以内。共感の嵐を起こし、読者に強い興味を持たせる。\n②【リプライへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿で興味を持った読者がそのまま追記まで読み進めたくなる構成にすること。`,
-        threads: `Threads：【朝の投稿】【昼の投稿】【夜の投稿】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：共感の嵐を起こし、読者に強い興味を持たせる。\n②【コメントへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿からコメント欄へ移動するアクションを促し、滞在時間を伸ばす構成にすること。`,
+        x:       `X：【朝の投稿（7時〜8時）】【昼の投稿（12時前後）】【夜の投稿（21時前後）】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：140文字以内。共感の嵐を起こし、読者に強い興味を持たせる。\n②【リプライへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿で興味を持った読者がそのまま追記まで読み進めたくなる構成にすること。`,
+        threads: `Threads：【朝の投稿（7時〜8時）】【昼の投稿（12時前後）】【夜の投稿（21時前後）】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：共感の嵐を起こし、読者に強い興味を持たせる。\n②【コメントへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿からコメント欄へ移動するアクションを促し、滞在時間を伸ばす構成にすること。`,
         insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
       };
 
@@ -667,9 +668,9 @@ ${profile}
       if (plat === 'threads' || plat === 'x') {
          // 3回分・二段構えのパースと装飾
          const styledText = escapeHtml(text)
-             .replace(/【(?:1回目：)?朝の投稿.*?】/g, '<div style="background:#FFF8E1; color:#D35400; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☀️ 朝の投稿</div>')
-             .replace(/【(?:2回目：)?昼の投稿.*?】/g, '<div style="background:#E3F2FD; color:#1565C0; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☕ 昼の投稿</div>')
-             .replace(/【(?:3回目：)?夜の投稿.*?】/g, '<div style="background:#ECEFF1; color:#283593; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">🌙 夜の投稿</div>')
+             .replace(/【(?:1回目：)?朝の投稿.*?】/g, '<div style="background:#FFF8E1; color:#D35400; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☀️ 朝の投稿（7時〜8時）</div>')
+             .replace(/【(?:2回目：)?昼の投稿.*?】/g, '<div style="background:#E3F2FD; color:#1565C0; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☕ 昼の投稿（12時前後）</div>')
+             .replace(/【(?:3回目：)?夜の投稿.*?】/g, '<div style="background:#ECEFF1; color:#283593; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">🌙 夜の投稿（21時前後）</div>')
              .replace(/【メイン投稿】/g, '<div class="threads-part-label" style="margin-top:8px;">📌 メイン投稿（What：共感・興味）</div>')
              .replace(/【(コメント|リプライ)への追記】/g, '<div class="threads-part-label" style="margin-top:12px; color:#E1306C;">💬 $1への追記（Why/How：解説・誘導）</div>');
 
@@ -808,8 +809,8 @@ async function regenSingle(plat) {
     yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
     fbc:     'FBコメント用キャッチコピーのみ：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
     fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
-    x:       `X：【朝の投稿】【昼の投稿】【夜の投稿】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：140文字以内。共感の嵐を起こし、読者に強い興味を持たせる。\n②【リプライへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿で興味を持った読者がそのまま追記まで読み進めたくなる構成にすること。`,
-    threads: `Threads：【朝の投稿】【昼の投稿】【夜の投稿】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：共感の嵐を起こし、読者に強い興味を持たせる。\n②【コメントへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿からコメント欄へ移動するアクションを促し、滞在時間を伸ばす構成にすること。`,
+    x:       `X：【朝の投稿（7時〜8時）】【昼の投稿（12時前後）】【夜の投稿（21時前後）】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：140文字以内。共感の嵐を起こし、読者に強い興味を持たせる。\n②【リプライへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿で興味を持った読者がそのまま追記まで読み進めたくなる構成にすること。`,
+    threads: `Threads：【朝の投稿（7時〜8時）】【昼の投稿（12時前後）】【夜の投稿（21時前後）】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：共感の嵐を起こし、読者に強い興味を持たせる。\n②【コメントへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿からコメント欄へ移動するアクションを促し、滞在時間を伸ばす構成にすること。`,
     insta:   'Instagram：500文字以内。改行多め。ハッシュタグは末尾に7〜10個。'
   };
   
@@ -859,9 +860,9 @@ ${currentAppTarget ? 'ターゲット：'+currentAppTarget : ''}
         document.getElementById('post-mj').textContent = text;
     } else if (plat === 'threads' || plat === 'x') {
         const styledText = escapeHtml(text)
-             .replace(/【(?:1回目：)?朝の投稿.*?】/g, '<div style="background:#FFF8E1; color:#D35400; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☀️ 朝の投稿</div>')
-             .replace(/【(?:2回目：)?昼の投稿.*?】/g, '<div style="background:#E3F2FD; color:#1565C0; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☕ 昼の投稿</div>')
-             .replace(/【(?:3回目：)?夜の投稿.*?】/g, '<div style="background:#ECEFF1; color:#283593; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">🌙 夜の投稿</div>')
+             .replace(/【(?:1回目：)?朝の投稿.*?】/g, '<div style="background:#FFF8E1; color:#D35400; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☀️ 朝の投稿（7時〜8時）</div>')
+             .replace(/【(?:2回目：)?昼の投稿.*?】/g, '<div style="background:#E3F2FD; color:#1565C0; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☕ 昼の投稿（12時前後）</div>')
+             .replace(/【(?:3回目：)?夜の投稿.*?】/g, '<div style="background:#ECEFF1; color:#283593; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">🌙 夜の投稿（21時前後）</div>')
              .replace(/【メイン投稿】/g, '<div class="threads-part-label" style="margin-top:8px;">📌 メイン投稿（What：共感・興味）</div>')
              .replace(/【(コメント|リプライ)への追記】/g, '<div class="threads-part-label" style="margin-top:12px; color:#E1306C;">💬 $1への追記（Why/How：解説・誘導）</div>');
 
