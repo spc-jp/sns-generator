@@ -153,7 +153,7 @@
   .error-msg { background: #FFF0F0; border: 1px solid #FFD0D0; border-radius: 10px; padding: 14px 16px; color: #C0392B; font-size: 13px; margin-top: 12px; display: none; }
   footer { text-align: center; padding: 24px 0 0; font-size: 11px; color: var(--muted); }
   
-  /* Threads・X 二段構え用スタイル */
+  /* Threads二段構え用スタイル */
   .threads-post-part { border-left: 3px solid #ddd; padding-left: 12px; margin-bottom: 12px; }
   .threads-part-label { font-size: 11px; font-weight: bold; color: var(--muted); margin-bottom: 4px; }
 </style>
@@ -323,7 +323,7 @@ const PLATFORMS = {
   yb:      { name: 'YBメッセージ', icon: '💌', limit: 300,  headerClass: 'yb-header',      tip: '「一緒に考えましょう」といった寄り添い感のあるメッセージで優しく紹介します。' },
   fbc:     { name: 'FBコメント用', icon: '💬', limit: 120,  headerClass: 'fbc-header',     tip: '投稿直後に最初のコメントとして貼り付けてください！' },
   fb:      { name: 'Facebook', icon: '📘', limit: 200, limitText: '200文字以内・URLなし', headerClass: 'fb-header',      tip: 'URLなし投稿がリーチUPのコツ。最初のコメントにURLを貼りましょう！' },
-  x:       { name: 'X（Twitter）', icon: '𝕏',  limitText: '1日3回分×二段構え',  headerClass: 'x-header',       tip: '朝・昼・夜の3回分。「メイン＋リプライ」の二段構えで滞在時間を伸ばします。' },
+  x:       { name: 'X（Twitter）', icon: '𝕏', limit: 280, limitText: '260〜280文字',  headerClass: 'x-header',       tip: '「えっ？」と思わせるフックから始まり、密度高く280文字以内に収めた経営者・士業向け投稿です。' },
   threads: { name: 'Threads',      icon: '🧵', limitText: '1日3回分×二段構え',  headerClass: 'threads-header', tip: '人間味のあるトーンで「メイン＋コメント」の二段構えで誘導します。' },
   insta:   { name: 'Instagram',    icon: '📷', limit: 2200, headerClass: 'insta-header',   tip: '「保存したくなる」内容が拡散の鍵。ハッシュタグは末尾に。' },
   note:    { name: 'note',         icon: '📝', limitText: '2300文字・目次対応', headerClass: 'note-header',    tip: '目次対応の見出し構成で、読者が最後まで読みやすくなります。' }
@@ -365,7 +365,7 @@ const loadingMessages = [
   'アプリの魅力を分析中...',
   '画像生成プロンプトを作成中...',
   'Facebookリーチ最適化中...',
-  '1日3回分の二段構え投稿を作成中...',
+  'Xの文字数と構成を調整中...',
   'ターゲットに刺さる言葉を選んでいます...',
   'note記事を執筆中です...',
   'もう少しで完成です！'
@@ -431,7 +431,17 @@ async function generate() {
         yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
         fbc:     'FBコメント用キャッチコピー：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
         fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
-        x:       `X：【朝の投稿（7時〜8時）】【昼の投稿（12時前後）】【夜の投稿（21時前後）】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：140文字以内。共感の嵐を起こし、読者に強い興味を持たせる。\n②【リプライへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿で興味を持った読者がそのまま追記まで読み進めたくなる構成にすること。`,
+        x:       `X：読者は「中小企業の経営者・士業」です。以下の流れで書いてください。
+①「え、それ知らなかった」と思わせる一文
+②よくある失敗例
+③その解決方法
+④すぐできる行動（URLへ誘導）
+⑤保存したくなる締め
+【条件】
+・文字数は必ず260〜280文字にしてください
+・無駄な言葉は削り、密度を高くしてください
+・改行は3〜5行入れてください
+・出力後、文字数をカウントして280文字以内に調整してください`,
         threads: `Threads：【朝の投稿（7時〜8時）】【昼の投稿（12時前後）】【夜の投稿（21時前後）】の見出しで1日3回分の投稿セットを作成すること。
 各回、以下の「二段構え」と「5つの文体ルール」で出力する。
 【二段構え構成】
@@ -664,7 +674,6 @@ ${profile}
         return;
       }
       
-      // 他のプラットフォーム（X, Threads, FB, Instagram, YBなど）
       let text = snsPosts[plat] || '';
       generatedPosts[plat] = text;
       const p = PLATFORMS[plat];
@@ -675,8 +684,7 @@ ${profile}
       
       let postContentHtml = '';
       
-      if (plat === 'threads' || plat === 'x') {
-         // 3回分・二段構えのパースと装飾
+      if (plat === 'threads') {
          const styledText = escapeHtml(text)
              .replace(/【(?:1回目：)?朝の投稿.*?】/g, '<div style="background:#FFF8E1; color:#D35400; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☀️ 朝の投稿（7時〜8時）</div>')
              .replace(/【(?:2回目：)?昼の投稿.*?】/g, '<div style="background:#E3F2FD; color:#1565C0; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☕ 昼の投稿（12時前後）</div>')
@@ -819,7 +827,17 @@ async function regenSingle(plat) {
     yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
     fbc:     'FBコメント用キャッチコピーのみ：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
     fb:      'Facebook投稿（URLなし）：200文字以内。URLは絶対に含めない。共感・問いかけ型。',
-    x:       `X：【朝の投稿（7時〜8時）】【昼の投稿（12時前後）】【夜の投稿（21時前後）】の見出しで1日3回分の投稿セットを作成すること。各回、以下の「二段構え」で出力する。\n①【メイン投稿】(What)：140文字以内。共感の嵐を起こし、読者に強い興味を持たせる。\n②【リプライへの追記】(Why/How)：体験談・核心情報・具体策を解説し、本命商品（アプリ等）の価値を感じさせる。最後にURLへ誘導する。\nメイン投稿で興味を持った読者がそのまま追記まで読み進めたくなる構成にすること。`,
+    x:       `X：読者は「中小企業の経営者・士業」です。以下の流れで書いてください。
+①「え、それ知らなかった」と思わせる一文
+②よくある失敗例
+③その解決方法
+④すぐできる行動（URLへ誘導）
+⑤保存したくなる締め
+【条件】
+・文字数は必ず260〜280文字にしてください
+・無駄な言葉は削り、密度を高くしてください
+・改行は3〜5行入れてください
+・出力後、文字数をカウントして280文字以内に調整してください`,
     threads: `Threads：【朝の投稿（7時〜8時）】【昼の投稿（12時前後）】【夜の投稿（21時前後）】の見出しで1日3回分の投稿セットを作成すること。
 各回、以下の「二段構え」と「5つの文体ルール」で出力する。
 【二段構え構成】
@@ -878,7 +896,7 @@ ${currentAppTarget ? 'ターゲット：'+currentAppTarget : ''}
         document.getElementById('post-mj-code').textContent = promptCode;
         document.getElementById('post-mj-desc').textContent = descText;
         document.getElementById('post-mj').textContent = text;
-    } else if (plat === 'threads' || plat === 'x') {
+    } else if (plat === 'threads') {
         const styledText = escapeHtml(text)
              .replace(/【(?:1回目：)?朝の投稿.*?】/g, '<div style="background:#FFF8E1; color:#D35400; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☀️ 朝の投稿（7時〜8時）</div>')
              .replace(/【(?:2回目：)?昼の投稿.*?】/g, '<div style="background:#E3F2FD; color:#1565C0; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☕ 昼の投稿（12時前後）</div>')
