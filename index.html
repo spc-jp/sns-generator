@@ -323,7 +323,7 @@ const PLATFORMS = {
   yb:      { name: 'YBメッセージ', icon: '💌', limit: 300,  headerClass: 'yb-header',      tip: '「一緒に考えましょう」といった寄り添い感のあるメッセージで優しく紹介します。' },
   fbc:     { name: 'FBコメント用', icon: '💬', limit: 120,  headerClass: 'fbc-header',     tip: '投稿直後に最初のコメントとして貼り付けてください！' },
   fb:      { name: 'Facebook', icon: '📘', limit: null, limitText: '実話風・共感型', headerClass: 'fb-header',      tip: '日常の気づきから未来への希望へ繋げ、やさしいCTAで締めるのがコツです。' },
-  x:       { name: 'X（Twitter）', icon: '𝕏', limit: 280, limitText: '280文字以内',  headerClass: 'x-header',       tip: '1文目の違和感と、短文・改行多めの構成で「続きを読みたい」と思わせます。' },
+  x:       { name: 'X（Twitter）', icon: '𝕏', limit: 280, limitText: 'ギリギリ280文字',  headerClass: 'x-header',       tip: '「えっ？」と思わせるフックから始まり、限りなく280文字に近づけた高密度な投稿を作成します。' },
   threads: { name: 'Threads',      icon: '🧵', limitText: '1日3回分×二段構え',  headerClass: 'threads-header', tip: '人間味のあるトーンで「メイン＋コメント」の二段構えで誘導します。' },
   insta:   { name: 'Instagram',    icon: '📷', limit: 2200, headerClass: 'insta-header',   tip: '「保存したくなる」内容が拡散の鍵。ハッシュタグは末尾に。' },
   note:    { name: 'note',         icon: '📝', limitText: '2300文字・目次対応', headerClass: 'note-header',    tip: '目次対応の見出し構成で、読者が最後まで読みやすくなります。' }
@@ -365,7 +365,7 @@ const loadingMessages = [
   'アプリの魅力を分析中...',
   '画像生成プロンプトを作成中...',
   'Facebookリーチ最適化中...',
-  'Xの文字数と構成を調整中...',
+  'Xの高密度な投稿を作成中...',
   'ターゲットに刺さる言葉を選んでいます...',
   'note記事を執筆中です...',
   'もう少しで完成です！'
@@ -431,7 +431,16 @@ async function generate() {
         yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
         fbc:     'FBコメント用キャッチコピー：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
         fb:      'Facebook：50代〜70代の経営者が「わかる…」と感じる、実話風投稿。売り込み感は弱めにし、「日常の気づき」→「小さな変化」→「AIとの出会い」→「未来への希望」の順で自然につなげること。最後にやさしいCTA（行動喚起）を入れ、絵文字を自然に使うこと。',
-        x:       'X：経営者向けに「続きを読みたい」と思う投稿にすること。【条件】280文字以内。1文目に強い違和感を持たせる。短文中心で改行多め。「共感」→「学び」→「最後に行動導線（URL）」の流れを重視すること。',
+        x:       `X：読者は「中小企業の経営者・士業」です。以下の流れで書いてください。
+①「え、それ知らなかった」と思わせる一文
+②よくある失敗例
+③その解決方法
+④すぐできる行動（URLへ誘導）
+⑤保存したくなる締め
+【条件】
+・文字数は単なる「280文字以内」ではなく、限界まで情報を詰め込み【限りなく280文字に近づけた投稿】にしてください（目安: 270〜280文字）。
+・無駄な言葉は削り、密度を高くしてください。
+・改行は3〜5行入れてください。`,
         threads: `Threads：【朝の投稿（7時〜8時）】【昼の投稿（12時前後）】【夜の投稿（21時前後）】の見出しで1日3回分の投稿セットを作成すること。
 各回、以下の「二段構え」と「5つの文体ルール」で出力する。
 【二段構え構成】
@@ -817,7 +826,16 @@ async function regenSingle(plat) {
     yb:      'YBメッセージ：300文字以内。「一人で悩まないでくださいね」「一緒に考えましょう」といった寄り添い感のあるニュアンスを自然に文章に織り交ぜながら、アプリを優しく紹介する。',
     fbc:     'FBコメント用キャッチコピーのみ：購買欲が増すキャッチを50〜80文字で。アプリ名とURLは不要。',
     fb:      'Facebook：50代〜70代の経営者が「わかる…」と感じる、実話風投稿。売り込み感は弱めにし、「日常の気づき」→「小さな変化」→「AIとの出会い」→「未来への希望」の順で自然につなげること。最後にやさしいCTA（行動喚起）を入れ、絵文字を自然に使うこと。',
-    x:       'X：経営者向けに「続きを読みたい」と思う投稿にすること。【条件】280文字以内。1文目に強い違和感を持たせる。短文中心で改行多め。「共感」→「学び」→「最後に行動導線（URL）」の流れを重視すること。',
+    x:       `X：読者は「中小企業の経営者・士業」です。以下の流れで書いてください。
+①「え、それ知らなかった」と思わせる一文
+②よくある失敗例
+③その解決方法
+④すぐできる行動（URLへ誘導）
+⑤保存したくなる締め
+【条件】
+・文字数は単なる「280文字以内」ではなく、限界まで情報を詰め込み【限りなく280文字に近づけた投稿】にしてください（目安: 270〜280文字）。
+・無駄な言葉は削り、密度を高くしてください。
+・改行は3〜5行入れてください。`,
     threads: `Threads：【朝の投稿（7時〜8時）】【昼の投稿（12時前後）】【夜の投稿（21時前後）】の見出しで1日3回分の投稿セットを作成すること。
 各回、以下の「二段構え」と「5つの文体ルール」で出力する。
 【二段構え構成】
@@ -876,7 +894,7 @@ ${currentAppTarget ? 'ターゲット：'+currentAppTarget : ''}
         document.getElementById('post-mj-code').textContent = promptCode;
         document.getElementById('post-mj-desc').textContent = descText;
         document.getElementById('post-mj').textContent = text;
-    } else if (plat === 'threads') {
+    } else if (plat === 'threads' || plat === 'x') {
         const styledText = escapeHtml(text)
              .replace(/【(?:1回目：)?朝の投稿.*?】/g, '<div style="background:#FFF8E1; color:#D35400; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☀️ 朝の投稿（7時〜8時）</div>')
              .replace(/【(?:2回目：)?昼の投稿.*?】/g, '<div style="background:#E3F2FD; color:#1565C0; padding:6px 12px; border-radius:6px; font-weight:bold; margin:16px 0 8px;">☕ 昼の投稿（12時前後）</div>')
